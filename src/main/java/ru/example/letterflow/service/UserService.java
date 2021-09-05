@@ -26,6 +26,6 @@ public class UserService {
         if(user == null){
             throw new UserNotFoundException("Пользователь не найден");
         }
-        return UserModel.toModel(usergit);
+        return UserModel.toModel(user);
     }
 }
