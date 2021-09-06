@@ -56,4 +56,6 @@ public class Room {
         this.roomName = roomName;
     }
 
+    public Room() {
+    }
 }
