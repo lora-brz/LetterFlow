@@ -1,6 +1,7 @@
 package ru.example.letterflow.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -19,6 +20,19 @@ public class User {
 
     @Column(name = "character")
     private String character;
+
+//    продумать:
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+//    private Set<Room> rooms;
+//
+//    public Set<Room> getRooms() {
+//        return rooms;
+//    }
+//
+//    public void setRooms(Set<Room> rooms) {
+//        this.rooms = rooms;
+//    }
+
 
     public User() {
     }
@@ -54,4 +68,5 @@ public class User {
     public void setCharacter(String character) {
         this.character = character;
     }
+
 }
