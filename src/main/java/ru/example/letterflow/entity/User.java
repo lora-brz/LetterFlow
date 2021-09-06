@@ -3,11 +3,25 @@ package ru.example.letterflow.entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long userId;
+
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "character")
+    private String character;
+
+    public User() {
+    }
 
     public Long getUserId() {
         return userId;
@@ -15,15 +29,6 @@ public class User {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @Column(name = "login")
-    private String login;
-
-    private String password;
-    private String character;
-
-    public User() {
     }
 
     public String getLogin() {
