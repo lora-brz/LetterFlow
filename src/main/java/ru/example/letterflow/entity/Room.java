@@ -23,15 +23,15 @@ public class Room {
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_userId", nullable = false)
     private Long userId;
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(User user) {
-        this.userId = user.getUserId();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Column(name = "personal")
