@@ -1,6 +1,7 @@
 package ru.example.letterflow.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -22,10 +23,13 @@ public class User {
     private Character character;
 
 //    продумать для Room и Message:
-//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-//    private ArrayList<Room> rooms;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    private List<Message> messages;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    private List<Room> rooms;
 //
-//    public ArrayList<Room> getRooms() {
+//    public Array<Room> getRooms() {
 //        return rooms;
 //    }
 //
