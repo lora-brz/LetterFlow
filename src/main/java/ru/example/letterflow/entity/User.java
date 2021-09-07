@@ -1,8 +1,6 @@
 package ru.example.letterflow.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -20,7 +18,8 @@ public class User {
     private String password;
 
     @Column(name = "character")
-    private String character;
+    @Enumerated(EnumType.STRING)
+    private Character character;
 
 //    продумать для Room и Message:
 //    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
@@ -62,11 +61,11 @@ public class User {
         this.password = password;
     }
 
-    public String getCharacter() {
+    public Character getCharacter() {
         return character;
     }
 
-    public void setCharacter(String character) {
+    public void setCharacter(Character character) {
         this.character = character;
     }
 
