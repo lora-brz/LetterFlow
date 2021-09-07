@@ -10,6 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "message")
 public class Message {
+
     @Id
     @Column(name = "messageId", nullable = false)
     private Long messageId;
@@ -23,27 +24,27 @@ public class Message {
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_userId", nullable = false)
     private Long userId;
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(User user) {
-        this.userId = user.getUserId();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "roomId", nullable = false)
+    @JoinColumn(name = "room_roomId", nullable = false)
     private Long roomId;
 
     public Long getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(Room room) {
-        this.roomId = room.getRoomId();
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     @Column(name = "createDate")
