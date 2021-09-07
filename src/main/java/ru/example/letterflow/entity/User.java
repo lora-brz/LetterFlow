@@ -12,35 +12,6 @@ public class User {
     @Column(name = "userId")
     private Long userId;
 
-    @Column(name = "login")
-    private String login;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "character")
-    @Enumerated(EnumType.STRING)
-    private Character character;
-
-//    продумать для Room и Message:
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-    private List<Message> messages;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
-    private List<Room> rooms;
-//
-//    public Array<Room> getRooms() {
-//        return rooms;
-//    }
-//
-//    public void setRooms(ArrayList<Room> rooms) {
-//        this.rooms = rooms;
-//    }
-
-
-    public User() {
-    }
-
     public Long getUserId() {
         return userId;
     }
@@ -48,6 +19,9 @@ public class User {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Column(name = "login")
+    private String login;
 
     public String getLogin() {
         return login;
@@ -57,6 +31,9 @@ public class User {
         this.login = login;
     }
 
+    @Column(name = "password")
+    private String password;
+
     public String getPassword() {
         return password;
     }
@@ -64,6 +41,10 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Column(name = "character")
+    @Enumerated(EnumType.STRING)
+    private Character character;
 
     public Character getCharacter() {
         return character;
@@ -73,4 +54,20 @@ public class User {
         this.character = character;
     }
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    private List<Message> messages;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    private List<Room> rooms;
+//
+//    public List<Room> getRooms() {
+//        return rooms;
+//    }
+//
+//    public void setRooms(List<Room> rooms) {
+//        this.rooms = rooms;
+//    }
+
+    public User() {
+    }
 }
