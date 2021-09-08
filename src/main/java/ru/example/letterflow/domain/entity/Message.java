@@ -69,7 +69,7 @@ public class Message {
         this.text.add(s);
     }
 
-    public Message() throws IOException {
+    public Message() {
     }
 
 }
