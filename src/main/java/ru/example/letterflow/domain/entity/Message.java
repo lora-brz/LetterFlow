@@ -1,4 +1,6 @@
-package ru.example.letterflow.entity;
+package ru.example.letterflow.domain.entity;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.BufferedReader;
@@ -12,6 +14,8 @@ import java.util.Date;
 public class Message {
 
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name= "increment", strategy= "increment")
     @Column(name = "messageId", nullable = false)
     private Long messageId;
 

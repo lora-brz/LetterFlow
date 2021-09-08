@@ -1,4 +1,4 @@
-package ru.example.letterflow.entity;
+package ru.example.letterflow.domain.entity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -54,10 +54,10 @@ public class User {
         this.character = character;
     }
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Message> messages;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Room> rooms;
 //
 //    public List<Room> getRooms() {

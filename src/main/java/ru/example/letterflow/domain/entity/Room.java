@@ -1,4 +1,4 @@
-package ru.example.letterflow.entity;
+package ru.example.letterflow.domain.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 

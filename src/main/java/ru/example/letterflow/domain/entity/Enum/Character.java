@@ -1,4 +1,4 @@
-package ru.example.letterflow.entity.Enum;
+package ru.example.letterflow.domain.entity.Enum;
 
 public enum Character {
     ADMIN, MODERATOR, USER, BLOCKED;

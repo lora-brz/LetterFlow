@@ -1,6 +1,6 @@
 package ru.example.letterflow.model;
 
-import ru.example.letterflow.entity.User;
+import ru.example.letterflow.domain.entity.User;
 
 public class UserModel {
     private Long userId;

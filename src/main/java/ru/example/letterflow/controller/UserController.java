@@ -3,10 +3,9 @@ package ru.example.letterflow.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.example.letterflow.entity.User;
+import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
-import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.UserService;
 
 @RestController
