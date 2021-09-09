@@ -7,4 +7,5 @@ public class MessageDto {
     private Long userId;
     private Long roomId;
     private Date createDate;
+    private ArrayList<String> text;
 }

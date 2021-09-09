@@ -27,8 +27,7 @@ public class Message {
         this.messageId = id;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "user_userId", nullable = false)
+    @Column(name = "userId")
     private Long userId;
 
     public Long getUserId() {
@@ -73,9 +72,10 @@ public class Message {
     public Message() {
     }
 
-    public Message(Long messageId, Long userId, Long roomId) {
+    public Message(Long messageId, Long userId, Long roomId, ArrayList<String> text) {
         this.messageId = messageId;
         this.userId = userId;
         this.roomId = roomId;
+        this.text = text;
     }
 }
