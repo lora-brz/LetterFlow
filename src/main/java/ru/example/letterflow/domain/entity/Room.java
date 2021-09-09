@@ -58,4 +58,11 @@ public class Room {
 
     public Room() {
     }
+
+    public Room(Long roomId, Long userId, Boolean personal, String roomName) {
+        this.roomId = roomId;
+        this.userId = userId;
+        this.personal = personal;
+        this.roomName = roomName;
+    }
 }
