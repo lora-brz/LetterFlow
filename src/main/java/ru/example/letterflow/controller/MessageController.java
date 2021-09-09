@@ -1,16 +1,15 @@
 package ru.example.letterflow.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.example.letterflow.domain.dto.MessageDto;
-import ru.example.letterflow.domain.dto.UserDto;
-import ru.example.letterflow.service.UserService;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/messages")
 public class MessageController {
 
 //    @Autowired
