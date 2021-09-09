@@ -64,6 +64,7 @@ public class Message {
     public ArrayList<String> getText() {
         return text;
     }
+
     public void setText() throws IOException {
         String s = new BufferedReader(new InputStreamReader(System.in)).readLine();
         this.text.add(s);
@@ -72,4 +73,9 @@ public class Message {
     public Message() {
     }
 
+    public Message(Long messageId, Long userId, Long roomId) {
+        this.messageId = messageId;
+        this.userId = userId;
+        this.roomId = roomId;
+    }
 }
