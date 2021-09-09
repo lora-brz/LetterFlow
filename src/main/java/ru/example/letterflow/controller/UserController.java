@@ -35,7 +35,7 @@ public class UserController {
 
     @PutMapping
     public String editUser(Long userId){
-        return null;
+        return "Изменения сохранены";
     }
 
     @DeleteMapping

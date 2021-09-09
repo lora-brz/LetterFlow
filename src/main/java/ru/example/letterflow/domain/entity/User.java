@@ -57,17 +57,32 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Message> messages;
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Room> rooms;
-//
-//    public List<Room> getRooms() {
-//        return rooms;
-//    }
-//
-//    public void setRooms(List<Room> rooms) {
-//        this.rooms = rooms;
-//    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
 
     public User() {
+    }
+
+    public User(Long userId, String login, String password, Character character) {
+        this.userId = userId;
+        this.login = login;
+        this.password = password;
+        this.character = character;
     }
 }
