@@ -4,19 +4,20 @@ import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserDto {
     private Long userId;
     private String login;
     private Character character;
-    private List<Room> rooms;
+    private List<RoomDto> rooms;
 
     public static UserDto toDto(User user){
         UserDto userDto = new UserDto();
         userDto.setUserId(user.getUserId());
         userDto.setLogin(user.getLogin());
         userDto.setCharacter(user.getCharacter());
-        userDto.setRooms(user.getRooms());
+        userDto.setRooms(user.getRooms().stream().map(RoomDto::toDTO).collect(Collectors.toList()));
         return userDto;
     }
 
@@ -47,11 +48,11 @@ public class UserDto {
         this.character = character;
     }
 
-    public List<Room> getRooms() {
+    public List<RoomDto> getRooms() {
         return rooms;
     }
 
-    public void setRooms(List<Room> rooms) {
+    public void setRooms(List<RoomDto> rooms) {
         this.rooms = rooms;
     }
 }
