@@ -2,10 +2,10 @@ package ru.example.letterflow.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
-import ru.example.letterflow.model.UserModel;
 import ru.example.letterflow.repository.UserRepo;
 
 @Service
@@ -21,12 +21,12 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public UserModel getOne (Long userId) throws UserNotFoundException {
+    public UserDto getOne (Long userId) throws UserNotFoundException {
         User user = userRepo.findById(userId).get();
         if(user == null){
             throw new UserNotFoundException("Пользователь не найден");
         }
-        return UserModel.toModel(user);
+        return UserDto.toDto(user);
     }
 
     public Long deleteUser(Long userId){

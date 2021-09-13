@@ -62,7 +62,7 @@ public class UserController {
 //        }
 //    }
 
-//    @DeleteMapping("/{userId")
+//    @DeleteMapping("/{userId}")
 //    public ResponseEntity deleteUser(@PathVariable Long userId){
 //        try{
 //            return ResponseEntity.ok(userService.deleteUser(userId));
