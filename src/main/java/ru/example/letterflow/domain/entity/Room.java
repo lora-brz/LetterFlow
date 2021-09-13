@@ -15,6 +15,19 @@ public class Room {
     @Column(name = "roomId")
     private Long roomId;
 
+    @Column(name = "personal")
+    private Boolean personal;
+
+    @Column(name = "roomName")
+    private String roomName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "user_userId", nullable = false)
+    private Long userId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "roomId")
+    private List<Message> messages;
+
     public Long getRoomId() {
         return roomId;
     }
@@ -22,21 +35,6 @@ public class Room {
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "user_userId", nullable = false)
-    private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @Column(name = "personal")
-    private Boolean personal;
 
     public Boolean getPersonal() {
         return personal;
@@ -46,9 +44,6 @@ public class Room {
         this.personal = personal;
     }
 
-    @Column(name = "roomName")
-    private String roomName;
-
     public String getRoomName() {
         return roomName;
     }
@@ -57,8 +52,13 @@ public class Room {
         this.roomName = roomName;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "roomId")
-    private List<Message> messages;
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public List<Message> getMessages() {
         return messages;

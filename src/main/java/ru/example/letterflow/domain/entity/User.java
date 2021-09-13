@@ -12,6 +12,19 @@ public class User {
     @Column(name = "userId")
     private Long userId;
 
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "character")
+    @Enumerated(EnumType.STRING)
+    private Character character;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userId")
+    private List<Room> rooms;
+
     public Long getUserId() {
         return userId;
     }
@@ -19,9 +32,6 @@ public class User {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-    @Column(name = "login")
-    private String login;
 
     public String getLogin() {
         return login;
@@ -31,9 +41,6 @@ public class User {
         this.login = login;
     }
 
-    @Column(name = "password")
-    private String password;
-
     public String getPassword() {
         return password;
     }
@@ -42,10 +49,6 @@ public class User {
         this.password = password;
     }
 
-    @Column(name = "character")
-    @Enumerated(EnumType.STRING)
-    private Character character;
-
     public Character getCharacter() {
         return character;
     }
@@ -53,9 +56,6 @@ public class User {
     public void setCharacter(Character character) {
         this.character = character;
     }
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userId")
-    private List<Room> rooms;
 
     public List<Room> getRooms() {
         return rooms;
