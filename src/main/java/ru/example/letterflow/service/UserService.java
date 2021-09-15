@@ -14,14 +14,14 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
-    public User registration(User user) throws UserAlreadyExistException {
+    public User saveUser (User user) throws UserAlreadyExistException {
         if(userRepo.findByUserLogin(user.getLogin()) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
         return userRepo.save(user);
     }
 
-    public UserDto getOne (Long userId) throws UserNotFoundException {
+    public UserDto getOneUser (Long userId) throws UserNotFoundException {
         User user = userRepo.findById(userId).get();
         if(user == null){
             throw new UserNotFoundException("Пользователь не найден");
@@ -33,4 +33,5 @@ public class UserService {
         userRepo.deleteById(userId);
         return userId;
     }
+
 }

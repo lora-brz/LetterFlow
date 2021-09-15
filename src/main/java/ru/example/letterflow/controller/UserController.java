@@ -20,8 +20,8 @@ public class UserController {
         return null;
     }
 
-    @GetMapping
-    public UserDto getOneUser(@RequestParam Long userId){
+    @GetMapping ("/{userId}")
+    public UserDto getOneUser(@PathVariable Long userId){
         return null;
     }
 
