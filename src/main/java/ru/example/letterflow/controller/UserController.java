@@ -3,24 +3,25 @@ package ru.example.letterflow.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.service.UserService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping
-    public UserDto saveUser(){
+    public UserDto saveUser(@RequestBody User user){
         return null;
     }
 
     @GetMapping
-    public UserDto getOneUser(Long userId){
+    public UserDto getOneUser(@RequestParam Long userId){
         return null;
     }
 
@@ -29,13 +30,13 @@ public class UserController {
         return null;
     }
 
-    @PutMapping
-    public UserDto editUser(Long userId){
+    @PutMapping ("/{userId}")
+    public UserDto editUser(@PathVariable Long userId){
         return null;
     }
 
     @DeleteMapping
-    public UserDto deleteUser(){
+    public UserDto deleteUser(@RequestParam Long userId){
         return null;
     }
 

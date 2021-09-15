@@ -10,29 +10,30 @@ import ru.example.letterflow.service.RoomService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/room")
 public class RoomController {
 
     @Autowired
     private RoomService roomService;
 
     @PostMapping
-    public RoomDto createRoom(){
+    public RoomDto createRoom(@RequestBody Room room,
+                              @RequestParam Long userId){
         return null;
     }
 
     @GetMapping
-    public List<RoomDto> getAllRooms(Long userId){
+    public List<RoomDto> getAllRooms(@RequestParam Long userId){
         return null;
     }
 
     @PutMapping
-    public RoomDto renameRoom(Long roomId){
+    public RoomDto renameRoom(@RequestParam Long roomId){
         return null;
     }
 
     @DeleteMapping
-    public RoomDto deleteRoom(Long roomId){
+    public RoomDto deleteRoom(@RequestParam Long roomId){
         return null;
     }
 
