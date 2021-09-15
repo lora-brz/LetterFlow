@@ -10,14 +10,6 @@ public class RoomDto {
     private Long userId;
     private String roomName;
 
-    public static RoomDto toDTO(Room room){
-        RoomDto roomDto = new RoomDto();
-        roomDto.setRoomId(room.getRoomId());
-        roomDto.setUserId(room.getUserId());
-        roomDto.setRoomName(room.getRoomName());
-        return roomDto;
-    }
-
     public RoomDto() {
     }
 

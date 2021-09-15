@@ -1,5 +1,7 @@
 package ru.example.letterflow.domain.entity;
 
+import ru.example.letterflow.domain.entity.Enum.Permission;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -18,9 +20,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "character")
-    @Enumerated(EnumType.STRING)
-    private Character character;
+    @Column(name = "permission")
+//    @Enumerated(EnumType.STRING)
+    private Permission permission;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Room> rooms;
@@ -49,12 +51,12 @@ public class User {
         this.password = password;
     }
 
-    public Character getCharacter() {
-        return character;
+    public Permission getPermission() {
+        return permission;
     }
 
-    public void setCharacter(Character character) {
-        this.character = character;
+    public void setPermission(Permission permission) {
+        this.permission = permission;
     }
 
     public List<Room> getRooms() {
@@ -68,10 +70,10 @@ public class User {
     public User() {
     }
 
-    public User(Long userId, String login, String password, Character character) {
+    public User(Long userId, String login, String password, Permission permission) {
         this.userId = userId;
         this.login = login;
         this.password = password;
-        this.character = character;
+        this.permission = permission;
     }
 }
