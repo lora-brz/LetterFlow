@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @DeleteMapping
-    public String deleteUser(){
-        return "Пользователь удален";
+    public UserDto deleteUser(){
+        return null;
     }
 
 //    @PostMapping

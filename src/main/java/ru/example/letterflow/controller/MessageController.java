@@ -24,8 +24,8 @@ public class MessageController {
     }
 
     @DeleteMapping
-    public String deleteAllMessage (Long roomId){
-        return "Сообщения чата удалены";
+    public MessageDto deleteAllMessage (Long roomId){
+        return null;
     }
 
 }

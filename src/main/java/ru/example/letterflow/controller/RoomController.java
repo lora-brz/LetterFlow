@@ -32,8 +32,8 @@ public class RoomController {
     }
 
     @DeleteMapping
-    public String deleteRoom(Long roomId){
-        return "Чат удален";
+    public RoomDto deleteRoom(Long roomId){
+        return null;
     }
 
 //    @PostMapping
