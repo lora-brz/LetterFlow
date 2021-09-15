@@ -17,8 +17,8 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping
-    public String createRoom(){
-        return "Чат создан";
+    public RoomDto createRoom(){
+        return null;
     }
 
     @GetMapping
@@ -27,8 +27,8 @@ public class RoomController {
     }
 
     @PutMapping
-    public String renameRoom(Long roomId){
-        return "Имя чата изненено на";
+    public RoomDto renameRoom(Long roomId){
+        return null;
     }
 
     @DeleteMapping

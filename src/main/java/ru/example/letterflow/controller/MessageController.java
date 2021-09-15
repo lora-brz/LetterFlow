@@ -1,9 +1,7 @@
 package ru.example.letterflow.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.MessageDto;
 
 import java.util.List;
@@ -16,13 +14,18 @@ public class MessageController {
 //    private MessageService messageService;
 
     @PostMapping
-    public String createMessage(){
-        return "Сообщение отправлено";
+    public MessageDto createMessage(Long roomId){
+        return null;
     }
 
     @GetMapping
-    public List<MessageDto> getAllMessages(Long roomId){
+    public List<MessageDto> getAllMessages (Long roomId){
         return null;
+    }
+
+    @DeleteMapping
+    public String deleteAllMessage (Long roomId){
+        return "Сообщения чата удалены";
     }
 
 }

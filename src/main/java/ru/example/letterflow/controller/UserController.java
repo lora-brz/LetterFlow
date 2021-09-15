@@ -15,8 +15,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public String saveUser(){
-        return "Пользователь зарегистрирован";
+    public UserDto saveUser(){
+        return null;
     }
 
     @GetMapping
@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @PutMapping
-    public String editUser(Long userId){
-        return "Изменения сохранены";
+    public UserDto editUser(Long userId){
+        return null;
     }
 
     @DeleteMapping
