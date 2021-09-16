@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.MessageDto;
 import ru.example.letterflow.domain.entity.Message;
-import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.service.MessageService;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import java.util.List;
 @RequestMapping("/message")
 public class MessageController {
 
-//    @Autowired
-//    private MessageService messageService;
+    @Autowired
+    private MessageService messageService;
 
     @PostMapping
     public MessageDto createMessage(@RequestBody Message message,

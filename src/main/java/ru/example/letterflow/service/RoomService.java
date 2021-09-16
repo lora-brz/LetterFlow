@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
-import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
-import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
-import ru.example.letterflow.service.mapping.UserMapper;
 
 import java.util.List;
 
@@ -21,12 +18,8 @@ public class RoomService {
     @Autowired
     private RoomRepo roomRepo;
 
-    @Autowired
-    private UserRepo userRepo;
-
     @Transactional
     public RoomDto addRoom(RoomDto roomDto){
-        User user = userRepo.findById(roomDto.getUserId()).get();
         Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
         roomRepo.save(room);
         return RoomMapper.ROOM_MAPPER.toDto(room);
@@ -53,6 +46,6 @@ public class RoomService {
     @Transactional
     public String deleteRoom(RoomDto roomDto){
         roomRepo.deleteById(roomDto.getRoomId());
-        return "Пользователь удален";
+        return "Чат удален";
     }
 }
