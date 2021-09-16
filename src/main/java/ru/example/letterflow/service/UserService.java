@@ -7,6 +7,7 @@ import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Enum.Permission;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
+import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.UserMapper;
 
@@ -29,8 +30,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserDto findOne(UserDto userDto){
-        return UserMapper.USER_MAPPER.toDto(userRepo.findById(userDto.getUserId()).get());
+    public UserDto findOne(UserDto userDto) throws UserNotFoundException {
+        User user = userRepo.findById(userDto.getUserId()).get();
+        if(user == null){
+            throw new UserNotFoundException("Пользователь не найден!");
+        }
+        return UserMapper.USER_MAPPER.toDto(user);
     }
 
     @Transactional(readOnly = true)
