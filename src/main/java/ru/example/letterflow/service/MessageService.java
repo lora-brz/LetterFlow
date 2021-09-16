@@ -4,15 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.MessageDto;
-import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.entity.Message;
-import ru.example.letterflow.domain.entity.Room;
-import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.repository.MessageRepo;
-import ru.example.letterflow.repository.RoomRepo;
-import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.MessageMapper;
-import ru.example.letterflow.service.mapping.RoomMapper;
 
 import java.util.List;
 

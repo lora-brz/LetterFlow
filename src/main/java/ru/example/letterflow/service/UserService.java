@@ -44,11 +44,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto renameUser (UserDto userDto, String string) throws UserAlreadyExistException {
+    public UserDto editName (UserDto userDto, String string) throws UserAlreadyExistException {
         if(userRepo.findByUserLogin(string) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
-        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+//        получить юзера из дто или из репозитория?
+//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        User user = userRepo.findById(userDto.getUserId()).get();
         user.setLogin(string);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
@@ -56,7 +58,9 @@ public class UserService {
 
     @Transactional
     public UserDto editPassword(UserDto userDto, String string){
-        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+//        получить юзера из дто или из репозитория?
+//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        User user = userRepo.findById(userDto.getUserId()).get();
         user.setPassword(string);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
@@ -64,7 +68,9 @@ public class UserService {
 
     @Transactional
     public UserDto editPermission(UserDto userDto, Permission permission){
-        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+//        получить юзера из дто или из репозитория?
+//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        User user = userRepo.findById(userDto.getUserId()).get();
         user.setPermission(permission);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
