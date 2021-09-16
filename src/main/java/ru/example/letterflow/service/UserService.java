@@ -35,10 +35,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserDto> findAll(){
-        List<User> user = userRepo.findAll();
+        List<User> users = userRepo.findAll();
         List<UserDto> userDtos = null;
-        for(User el : user){
-            userDtos.add(UserMapper.USER_MAPPER.toDto(el));
+        for(User user : users){
+            userDtos.add(UserMapper.USER_MAPPER.toDto(user));
         }
         return userDtos;
     }

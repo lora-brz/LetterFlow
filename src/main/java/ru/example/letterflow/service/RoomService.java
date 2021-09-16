@@ -2,11 +2,18 @@ package ru.example.letterflow.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
+import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.repository.UserRepo;
+import ru.example.letterflow.service.mapping.RoomMapper;
+import ru.example.letterflow.service.mapping.UserMapper;
+
+import java.util.List;
 
 @Service
 public class RoomService {
@@ -17,15 +24,35 @@ public class RoomService {
     @Autowired
     private UserRepo userRepo;
 
-    public RoomDto createRoom(Room room, Long userId){
-        User user = userRepo.findById(userId).get();
-        room.setUserId(user.getUserId());
-        return RoomDto.toDTO(roomRepo.save(room));
+    @Transactional
+    public RoomDto addRoom(RoomDto roomDto){
+        User user = userRepo.findById(roomDto.getUserId()).get();
+        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
+        roomRepo.save(room);
+        return RoomMapper.ROOM_MAPPER.toDto(room);
     }
 
-    public RoomDto renameRoom(Long roomId, String name){
-        Room room = roomRepo.findById(roomId).get();
-        room.setRoomName(name);
-        return RoomDto.toDTO(roomRepo.save(room));
+    @Transactional(readOnly = true)
+    public List<RoomDto> findAllRoomsByUser(Long userId){
+        List<Room> rooms = roomRepo.findAll();
+        List<RoomDto> roomDtos = null;
+        for(Room room : rooms){
+            if(room.getUserId() == userId)
+                roomDtos.add(RoomMapper.ROOM_MAPPER.toDto(room));
+        }
+        return roomDtos;
+    }
+
+    @Transactional
+    public RoomDto renameRoom(RoomDto roomDto, String string){
+        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
+        room.setRoomName(string);
+        return RoomMapper.ROOM_MAPPER.toDto(room);
+    }
+
+    @Transactional
+    public String deleteRoom(RoomDto roomDto){
+        roomRepo.deleteById(roomDto.getRoomId());
+        return "Пользователь удален";
     }
 }
