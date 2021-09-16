@@ -3,10 +3,6 @@ package ru.example.letterflow.domain.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
@@ -19,16 +15,26 @@ public class Message {
     @Column(name = "messageId", nullable = false)
     private Long messageId;
 
-    public Long getId() {
+    @Column(name = "userId")
+    private Long userId;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "room_roomId", nullable = false)
+    private Long roomId;
+
+    @Column(name = "createDate")
+    private final Date createDate;
+
+    @Column(name = "text")
+    private String text;
+
+    public Long getMessageId() {
         return messageId;
     }
 
-    public void setId(Long id) {
-        this.messageId = id;
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
     }
-
-    @Column(name = "userId")
-    private Long userId;
 
     public Long getUserId() {
         return userId;
@@ -38,10 +44,6 @@ public class Message {
         this.userId = userId;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "room_roomId", nullable = false)
-    private Long roomId;
-
     public Long getRoomId() {
         return roomId;
     }
@@ -50,32 +52,23 @@ public class Message {
         this.roomId = roomId;
     }
 
-    @Column(name = "createDate")
-    private final Date createDate = new Date();
-
     public Date getCreateDate() {
         return createDate;
     }
 
-    @Column(name = "text")
-    private ArrayList<String> text = new ArrayList<>();
-
-    public ArrayList<String> getText() {
+    public String getText() {
         return text;
     }
 
-    public void setText() throws IOException {
-        String s = new BufferedReader(new InputStreamReader(System.in)).readLine();
-        this.text.add(s);
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public Message() {
-    }
-
-    public Message(Long messageId, Long userId, Long roomId, ArrayList<String> text) {
+    public Message(Long messageId, Long userId, Long roomId, Date createDate, String text) {
         this.messageId = messageId;
         this.userId = userId;
         this.roomId = roomId;
+        this.createDate = new Date();
         this.text = text;
     }
 }

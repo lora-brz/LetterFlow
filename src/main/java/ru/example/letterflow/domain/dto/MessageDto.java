@@ -7,7 +7,7 @@ public class MessageDto {
     private Long userId;
     private Long roomId;
     private Date createDate;
-    private ArrayList<String> text;
+    private String text;
 
     public MessageDto() {
     }
@@ -29,18 +29,18 @@ public class MessageDto {
     }
 
     public Date getCreateDate() {
-        return new Date();
+        return createDate;
     }
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
 
-    public ArrayList<String> getText() {
+    public String getText() {
         return text;
     }
 
-    public void setText(ArrayList<String> text) {
+    public void setText(String text) {
         this.text = text;
     }
 }

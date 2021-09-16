@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.domain.entity.Enum.Permission;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.repository.UserRepo;
@@ -23,7 +24,6 @@ public class UserService {
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
         User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        user.s
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
@@ -41,6 +41,39 @@ public class UserService {
             userDtos.add(UserMapper.USER_MAPPER.toDto(el));
         }
         return userDtos;
+    }
+
+    @Transactional
+    public UserDto renameUser (UserDto userDto, String string) throws UserAlreadyExistException {
+        if(userRepo.findByUserLogin(string) != null){
+            throw new UserAlreadyExistException("Такой логин уже занят");
+        }
+        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        user.setLogin(string);
+        userRepo.save(user);
+        return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public UserDto editPassword(UserDto userDto, String string){
+        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        user.setPassword(string);
+        userRepo.save(user);
+        return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public UserDto editPermission(UserDto userDto, Permission permission){
+        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        user.setPermission(permission);
+        userRepo.save(user);
+        return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public String deleteUser(UserDto userDto){
+        userRepo.deleteById(userDto.getUserId());
+        return "Пользователь удален";
     }
 
 //    public User saveUser (User user) throws UserAlreadyExistException {

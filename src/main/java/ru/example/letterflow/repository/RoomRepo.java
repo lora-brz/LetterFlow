@@ -6,4 +6,5 @@ import ru.example.letterflow.domain.entity.Room;
 
 @Repository
 public interface RoomRepo extends JpaRepository<Room, Long> {
+
 }
