@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.entity.Room;
+import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
 
@@ -17,7 +18,10 @@ public class RoomService {
     private RoomRepo roomRepo;
 
     @Transactional
-    public RoomDto addRoom(RoomDto roomDto){
+    public RoomDto addRoom(RoomDto roomDto) throws RoomAlreadyExistException {
+        if(roomRepo.findByRoomName(roomDto.getRoomName()) != null){
+            throw new RoomAlreadyExistException("Комната с таким именем уже существует");
+        }
         Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
         roomRepo.save(room);
         return RoomMapper.ROOM_MAPPER.toDto(room);
@@ -35,9 +39,12 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomDto renameRoom(RoomDto roomDto, String string){
+    public RoomDto renameRoom(RoomDto roomDto, String string) throws RoomAlreadyExistException {
 //        получить чат из дто или из репозитория?
 //        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
+        if(roomRepo.findByRoomName(string) != null){
+            throw new RoomAlreadyExistException("Комната с таким именем уже существует");
+        }
         Room room = roomRepo.getById(roomDto.getRoomId());
         room.setRoomName(string);
         return RoomMapper.ROOM_MAPPER.toDto(room);
