@@ -48,8 +48,8 @@ public class RoomService {
     public RoomDto renameRoom(UserDto userDto, RoomDto roomDto, String string) throws RoomAlreadyExistException, InsufficientAccessRightsException {
 //        получить чат из дто или из репозитория?
 //        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        if(userDto.isBlocked()){
-            throw new InsufficientAccessRightsException("Заблокированные пользователи не могут переименовывать комнаты");
+        if(!userDto.isAdmin()){
+            throw new InsufficientAccessRightsException("Переименовывать комнату может только владелец");
         }
         if(roomRepo.findByRoomName(string) != null){
             throw new RoomAlreadyExistException("Комната с таким именем уже существует");

@@ -82,11 +82,11 @@ public class UserService {
             user.setPermission(permission);
         } else if(userDto.isModerator()){
             if(permission == Permission.ADMIN || permission == Permission.MODERATOR){
-                throw new InsufficientAccessRightsException("Вы не можете назначать администрата или модератора");
+                throw new InsufficientAccessRightsException("Вы не можете менять администратора или модератора");
             }
             user.setPermission(permission);
         } else{
-            throw new InsufficientAccessRightsException("Вы не можете менять роль пользователям");
+            throw new InsufficientAccessRightsException("Вы не можете менять роль пользователя");
         }
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
