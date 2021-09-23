@@ -11,13 +11,12 @@ import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.repository.MessageRepo;
 import ru.example.letterflow.service.mapping.MessageMapper;
 
-import java.util.List;
 
 @Service
 public class MessageService {
     @Autowired
     private MessageRepo messageRepo;
-    
+
     @Transactional
     public MessageDto addMessage(UserDto userDto, RoomDto roomDto, MessageDto messageDto) throws InsufficientAccessRightsException {
         if(userDto.isBlocked()){
@@ -30,21 +29,16 @@ public class MessageService {
         return MessageMapper.MESSAGE_MAPPER.toDto(message);
     }
 
-    public List<MessageDto> findAllMessagesByRoom(MessageDto messageDto, RoomDto roomDto){
-        List<Message> messages = messageRepo.findAll();
-        List<MessageDto> messageDtos = null;
-        for(Message message : messages){
-            if(message.getRoomId() == roomDto.getRoomId())
-                messageDtos.add(MessageMapper.MESSAGE_MAPPER.toDto(message));
-        }
-        return messageDtos;
-    }
-
     public String deleteAllMessagesByRoom(UserDto userDto, RoomDto roomDto) throws InsufficientAccessRightsException {
         if(!userDto.isAdmin() && !userDto.isModerator()){
             throw new InsufficientAccessRightsException("Удалять сообщения в этом чате может только его администратор или модератор");
         }
         messageRepo.deleteById(roomDto.getRoomId());
         return "Чат очищен";
-    }        
+    }
+
+    public String deleteAllMessagesByUser(UserDto userDto){
+        messageRepo.deleteById(userDto.getUserId());
+        return "Сообщения пользователя " + userDto.getLogin() + " удалены";
+    }
 }

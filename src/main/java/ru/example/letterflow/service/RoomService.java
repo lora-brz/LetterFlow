@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.RoomAlreadyExistException;
+import ru.example.letterflow.repository.MessageRepo;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
 
@@ -18,6 +20,9 @@ public class RoomService {
 
     @Autowired
     private RoomRepo roomRepo;
+
+    @Autowired
+    private MessageRepo messageRepo;
 
     @Transactional
     public RoomDto addRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
@@ -57,6 +62,16 @@ public class RoomService {
         Room room = roomRepo.getById(roomDto.getRoomId());
         room.setRoomName(string);
         return RoomMapper.ROOM_MAPPER.toDto(room);
+    }
+
+    public List<String> findAllMessagesByRoom(RoomDto roomDto){
+        List<Message> messages = messageRepo.findAll();
+        List<String> messagesInRoom = null;
+        for(Message message : messages){
+            if(message.getRoomId() == roomDto.getRoomId())
+                messagesInRoom.add(message.getText());
+        }
+        return messagesInRoom;
     }
 
     @Transactional
