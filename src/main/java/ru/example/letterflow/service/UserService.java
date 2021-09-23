@@ -78,7 +78,12 @@ public class UserService {
 //        получить юзера из дто или из репозитория?
 //        User user = UserMapper.USER_MAPPER.toEntity(userDto);
         User user = userRepo.findById(userId).get();
-        if (userDto.isAdmin() || userDto.isModerator()){
+        if (userDto.isAdmin()){
+            user.setPermission(permission);
+        } else if(userDto.isModerator()){
+            if(permission == Permission.ADMIN || permission == Permission.MODERATOR){
+                throw new InsufficientAccessRightsException("Вы не можете назначать администрата или модератора");
+            }
             user.setPermission(permission);
         } else{
             throw new InsufficientAccessRightsException("Вы не можете менять роль пользователям");
