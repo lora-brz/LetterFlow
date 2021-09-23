@@ -27,6 +27,21 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Room> rooms;
 
+    @ManyToOne
+    @JoinColumn(name = "room_roomId")
+    private Room roomId;
+
+    public Room getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Room roomId) {
+        this.roomId = roomId;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "room_roomId", nullable = false)
+
     public Long getUserId() {
         return userId;
     }

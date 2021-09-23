@@ -29,6 +29,7 @@ public class MessageService {
         return MessageMapper.MESSAGE_MAPPER.toDto(message);
     }
 
+    @Transactional
     public String deleteAllMessagesByRoom(UserDto userDto, RoomDto roomDto) throws InsufficientAccessRightsException {
         if(!userDto.isAdmin() && !userDto.isModerator()){
             throw new InsufficientAccessRightsException("Удалять сообщения в этом чате может только его администратор или модератор");
@@ -37,6 +38,7 @@ public class MessageService {
         return "Чат очищен";
     }
 
+    @Transactional
     public String deleteAllMessagesByUser(UserDto userDto){
         messageRepo.deleteById(userDto.getUserId());
         return "Сообщения пользователя " + userDto.getLogin() + " удалены";

@@ -28,6 +28,9 @@ public class Room {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "roomId")
     private List<Message> messages;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "roomId")
+    private List<User> roomUsers;
+
     public Long getRoomId() {
         return roomId;
     }
@@ -66,6 +69,14 @@ public class Room {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public List<User> getRoomUsers() {
+        return roomUsers;
+    }
+
+    public void setRoomUsers(List<User> roomUsers) {
+        this.roomUsers = roomUsers;
     }
 
     public Room() {

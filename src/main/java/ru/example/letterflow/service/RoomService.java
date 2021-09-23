@@ -7,10 +7,12 @@ import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
+import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.repository.MessageRepo;
 import ru.example.letterflow.repository.RoomRepo;
+import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
 
 import java.util.List;
@@ -24,6 +26,9 @@ public class RoomService {
     @Autowired
     private MessageRepo messageRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Transactional
     public RoomDto addRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
         if(userDto.isBlocked()){
@@ -36,17 +41,6 @@ public class RoomService {
         room.setUserId(userDto.getUserId());
         roomRepo.save(room);
         return RoomMapper.ROOM_MAPPER.toDto(room);
-    }
-
-    @Transactional(readOnly = true)
-    public List<RoomDto> findAllRoomsByUser(Long userId){
-        List<Room> rooms = roomRepo.findAll();
-        List<RoomDto> roomDtos = null;
-        for(Room room : rooms){
-            if(room.getUserId() == userId)
-                roomDtos.add(RoomMapper.ROOM_MAPPER.toDto(room));
-        }
-        return roomDtos;
     }
 
     @Transactional
@@ -64,6 +58,7 @@ public class RoomService {
         return RoomMapper.ROOM_MAPPER.toDto(room);
     }
 
+    @Transactional(readOnly = true)
     public List<String> findAllMessagesByRoom(RoomDto roomDto){
         List<Message> messages = messageRepo.findAll();
         List<String> messagesInRoom = null;
@@ -82,4 +77,44 @@ public class RoomService {
         roomRepo.deleteById(roomDto.getRoomId());
         return "Чат удален";
     }
+
+    @Transactional
+    public RoomDto addUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
+        if(userDto.isBlocked()){
+            throw new InsufficientAccessRightsException("Вы заблокированы и не можете добавить пользователя в чат");
+        }
+        User user = userRepo.findById(userId).get();
+        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
+        room.getRoomUsers().add(user);
+        roomRepo.save(room);
+        return RoomMapper.ROOM_MAPPER.toDto(room);
+    }
+
+    @Transactional
+    public RoomDto deleteUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
+        if(!userDto.isAdmin()){
+            throw new InsufficientAccessRightsException("Удалять пользователей из чата может только администратор");
+        }
+        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
+        List<User> roomUsers = room.getRoomUsers();
+        for(User user : roomUsers){
+            if(user.getUserId() == userId){
+                roomUsers.remove(user);
+            }
+        }
+        room.setRoomUsers(roomUsers);
+        roomRepo.save(room);
+        return RoomMapper.ROOM_MAPPER.toDto(room);
+    }
+
+//    @Transactional(readOnly = true)
+//    public List<RoomDto> findAllRoomsByUser(Long userId){
+//        List<Room> rooms = roomRepo.findAll();
+//        List<RoomDto> roomDtos = null;
+//        for(Room room : rooms){
+//            if(room.getUserId() == userId)
+//                roomDtos.add(RoomMapper.ROOM_MAPPER.toDto(room));
+//        }
+//        return roomDtos;
+//    }
 }
