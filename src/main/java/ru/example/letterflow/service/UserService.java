@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Enum.Permission;
 import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.repository.UserRepo;
@@ -25,6 +26,7 @@ public class UserService {
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
         User user = UserMapper.USER_MAPPER.toEntity(userDto);
+        user.setPermission(Permission.USER);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
@@ -72,11 +74,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editPermission(UserDto userDto, Permission permission){
+    public UserDto editPermission(UserDto userDto, Permission permission, Long userId) throws InsufficientAccessRightsException {
 //        получить юзера из дто или из репозитория?
 //        User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        User user = userRepo.findById(userDto.getUserId()).get();
-        user.setPermission(permission);
+        User user = userRepo.findById(userId).get();
+        if (userDto.isAdmin() || userDto.isModerator()){
+            user.setPermission(permission);
+        } else{
+            throw new InsufficientAccessRightsException("Вы не можете менять роль пользователям");
+        }
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }

@@ -29,9 +29,14 @@ public class BaseControllerAdvice {
         return response (HttpStatus.CONFLICT, ex, request);
     }
 
+    @ExceptionHandler(RoomAlreadyExistException.class)
+    public  Object insufficientAccessRightsException(InsufficientAccessRightsException ex, WebRequest request){
+        return response (HttpStatus.FORBIDDEN, ex, request);
+    }
+
     public Object response(HttpStatus status, Exception ex, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> body = new HashMap<>();
         body.put("status", status.toString());
         body.put("message", ex.getMessage());

@@ -44,4 +44,16 @@ public class UserDto {
     public void setRooms(List<RoomDto> rooms) {
         this.rooms = rooms;
     }
+
+    public boolean isAdmin(){
+        return this.getPermission() == Permission.ADMIN;
+    }
+
+    public boolean isModerator(){
+        return this.getPermission() == Permission.MODERATOR;
+    }
+
+    public boolean isBlocked(){
+        return this.getPermission() == Permission.BLOCKED;
+    }
 }
