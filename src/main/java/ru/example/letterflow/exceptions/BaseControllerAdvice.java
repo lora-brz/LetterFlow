@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class BaseControllerAdvice {
+
+    private final DateTimeFormatter isoDateTimeFormatter;
 
     @ExceptionHandler(UserAlreadyExistException.class)
     public Object userAlreadyExistException(UserAlreadyExistException ex, WebRequest request){
@@ -38,11 +42,15 @@ public class BaseControllerAdvice {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> body = new HashMap<>();
-
+        body.put("timestamp", isoDateTimeFormatter.format(ZonedDateTime.now()));
         body.put("status", status.toString());
         body.put("message", ex.getMessage());
         body.put("exception", ex.getClass().getName());
         body.put("path", request.getDescription(false).replaceFirst("uri=", ""));
         return new ResponseEntity<> (body, headers, status);
+    }
+
+    public BaseControllerAdvice(DateTimeFormatter isoDateTimeFormatter) {
+        this.isoDateTimeFormatter = isoDateTimeFormatter;
     }
 }
