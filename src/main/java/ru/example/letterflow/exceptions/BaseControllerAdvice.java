@@ -38,10 +38,11 @@ public class BaseControllerAdvice {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> body = new HashMap<>();
+
         body.put("status", status.toString());
         body.put("message", ex.getMessage());
         body.put("exception", ex.getClass().getName());
-        body.put("path", request.getDescription(false).replaceFirst("url", ""));
+        body.put("path", request.getDescription(false).replaceFirst("uri=", ""));
         return new ResponseEntity<> (body, headers, status);
     }
 }
