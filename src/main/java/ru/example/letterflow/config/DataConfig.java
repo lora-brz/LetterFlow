@@ -18,9 +18,9 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("com.devcolibri.dataexam")
+@ComponentScan("ru.example.letterflow")
 @PropertySource("classpath:app.properties")
-@EnableJpaRepositories("com.devcolibri.dataexam.repository")
+@EnableJpaRepositories("ru.example.letterflow.repository")
 public class DataConfig {
 
     private static final String PROP_DATABASE_DRIVER = "db.driver";
