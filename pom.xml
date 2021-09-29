@@ -14,6 +14,22 @@
         <version>2.3.10.RELEASE</version>
     </parent>
 
+    <properties>
+        <java.version>11.0.11</java.version>
+        <mysql.connector.version>8.0.26</mysql.connector.version>
+        <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+
+<!--        <spring.mvc>4.0.3.RELEASE</spring.mvc>-->
+<!--        <javax.servlet>3.0.1</javax.servlet>-->
+        <mysql.version>8.0.26</mysql.version>
+<!--        <hb.manager>4.2.5.Final</hb.manager>-->
+<!--        <spring.test>3.2.4.RELEASE</spring.test>-->
+<!--        <junit.version>4.11</junit.version>-->
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -24,7 +40,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.2.14.RELEASE</version>
+            <version>5.3.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -34,17 +50,21 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.2.14.RELEASE</version>
+            <version>5.3.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>5.2.14.RELEASE</version>
+            <version>5.3.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,42 +77,73 @@
             <version>2.5.4</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.5.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
             <version>2.5.4</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.liquibase</groupId>-->
+<!--            <artifactId>liquibase-core</artifactId>-->
+<!--            <version>4.4.3</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.26</version>
+            <version>${mysql.connector.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.4.2.Final</version>
+            <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.5.7.Final</version>
+            <version>3.3.2.GA</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>maven-lombok-plugin</artifactId>
+            <version>0.9.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>3.4.0.GA</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>5.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>2.3.10.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <classifier>exec</classifier>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.10.RELEASE</version>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -124,13 +175,5 @@
 <!--            </plugin>-->
         </plugins>
     </build>
-
-
-    <properties>
-        <java.version>11.0.11</java.version>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
-    </properties>
 
 </project>
