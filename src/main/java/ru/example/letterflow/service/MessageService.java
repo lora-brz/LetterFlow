@@ -14,6 +14,7 @@ import ru.example.letterflow.service.mapping.MessageMapper;
 
 @Service
 public class MessageService {
+
     @Autowired
     private MessageRepo messageRepo;
 

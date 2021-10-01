@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "room")
+@Table(name = "rooms")
 public class Room {
 
     @Id
@@ -21,7 +21,7 @@ public class Room {
     @Column(name = "roomName")
     private String roomName;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_userId", nullable = false)
     private Long userId;
 
@@ -82,10 +82,4 @@ public class Room {
     public Room() {
     }
 
-    public Room(Long roomId, Long userId, Boolean personal, String roomName) {
-        this.roomId = roomId;
-        this.userId = userId;
-        this.personal = personal;
-        this.roomName = roomName;
-    }
 }

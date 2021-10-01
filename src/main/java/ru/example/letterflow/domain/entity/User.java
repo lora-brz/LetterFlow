@@ -6,11 +6,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long userId;
 
@@ -20,14 +20,14 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "permission")
-//    @Enumerated(EnumType.STRING)
     private Permission permission;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userId")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userId")
     private List<Room> rooms;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "room_roomId")
     private Room roomId;
 
@@ -38,9 +38,6 @@ public class User {
     public void setRoomId(Room roomId) {
         this.roomId = roomId;
     }
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "room_roomId", nullable = false)
 
     public Long getUserId() {
         return userId;
@@ -83,12 +80,5 @@ public class User {
     }
 
     public User() {
-    }
-
-    public User(Long userId, String login, String password, Permission permission) {
-        this.userId = userId;
-        this.login = login;
-        this.password = password;
-        this.permission = permission;
     }
 }

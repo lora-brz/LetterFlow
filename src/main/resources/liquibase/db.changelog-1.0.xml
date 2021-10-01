@@ -2,4 +2,69 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="1.0.0" author="lora.brz">
+        <createTable tableName="users">
+            <column name="userId" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission" type="varchar(20)" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="lora.brz">
+        <createTable tableName="rooms">
+            <column name="roomId" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="personal" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roomName" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.2" author="lora.brz">
+        <createTable tableName="messages">
+            <column name="messageId" type="bigint">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="userId" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="text"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.3" author="lora.brz">
+        <addForeignKeyConstraint baseTableName="users"
+                                 baseColumnNames="room_roomId"
+                                 constraintName="roomId"
+                                 referencedTableName="rooms"
+                                 referencedColumnNames="roomId"/>
+    </changeSet>
+    <changeSet id="1.0.4" author="lora.brz">
+        <addForeignKeyConstraint baseTableName="rooms"
+                                 baseColumnNames="user_userId"
+                                 constraintName="userId"
+                                 referencedTableName="users"
+                                 referencedColumnNames="userId"/>
+    </changeSet>
+    <changeSet id="1.0.5" author="lora.brz">
+        <addForeignKeyConstraint baseTableName="message"
+                                 baseColumnNames="room_roomId"
+                                 constraintName="roomId"
+                                 referencedTableName="rooms"
+                                 referencedColumnNames="roomId"/>
+    </changeSet>
+
 </databaseChangeLog>

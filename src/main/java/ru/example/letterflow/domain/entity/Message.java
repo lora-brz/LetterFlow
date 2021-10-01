@@ -1,6 +1,7 @@
 package ru.example.letterflow.domain.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,6 +23,7 @@ public class Message {
     @JoinColumn(name = "room_roomId", nullable = false)
     private Long roomId;
 
+    @CreatedDate
     @Column(name = "createDate")
     private final Date createDate;
 
