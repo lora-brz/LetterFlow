@@ -1,6 +1,8 @@
 package ru.example.letterflow.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.UserDto;
@@ -15,10 +17,14 @@ import ru.example.letterflow.service.mapping.UserMapper;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public UserDto addUser (UserDto userDto) throws UserAlreadyExistException {
@@ -27,13 +33,14 @@ public class UserService {
         }
         User user = UserMapper.USER_MAPPER.toEntity(userDto);
         user.setPermission(Permission.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
 
     @Transactional(readOnly = true)
-    public UserDto findOne(UserDto userDto) throws UserNotFoundException {
-        User user = userRepo.findById(userDto.getUserId()).get();
+    public UserDto findUser(String login) throws UserNotFoundException {
+        User user = userRepo.findByUserLogin(login);
         if(user == null){
             throw new UserNotFoundException("Пользователь не найден!");
         }
