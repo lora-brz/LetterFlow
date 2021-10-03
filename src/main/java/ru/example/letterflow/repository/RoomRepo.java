@@ -6,7 +6,7 @@ import ru.example.letterflow.domain.entity.Room;
 
 @Repository
 public interface RoomRepo extends JpaRepository<Room, Long> {
-    Room findByRoomName (String roomName);
+    Room findByRoomName(String roomName);
 
-    Room getById(Long roomId);
+    Room findByRoomId(Long roomId);
 }

@@ -53,7 +53,7 @@ public class RoomService {
         if(roomRepo.findByRoomName(string) != null){
             throw new RoomAlreadyExistException("Комната с таким именем уже существует");
         }
-        Room room = roomRepo.getById(roomDto.getRoomId());
+        Room room = roomRepo.findByRoomId(roomDto.getRoomId());
         room.setRoomName(string);
         return RoomMapper.ROOM_MAPPER.toDto(room);
     }
