@@ -1,8 +1,12 @@
 package ru.example.letterflow.domain.entity;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import ru.example.letterflow.domain.entity.Enum.Permission;
+import ru.example.letterflow.domain.entity.Enum.Status;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,20 +28,20 @@ public class User {
     @Column(name = "permission")
     private Permission permission;
 
+    @CreatedDate
+    @Column(name = "created")
+    private Date created;
+
+    @LastModifiedDate
+    @Column(name = "updated")
+    private Date updated;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userId")
     private List<Room> rooms;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "room_roomId")
-    private Room roomId;
-
-    public Room getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Room roomId) {
-        this.roomId = roomId;
-    }
 
     public Long getUserId() {
         return userId;
@@ -77,6 +81,30 @@ public class User {
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public User() {

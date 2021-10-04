@@ -1,5 +1,6 @@
 package ru.example.letterflow.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,7 +8,6 @@ import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
-import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.repository.MessageRepo;
@@ -18,6 +18,7 @@ import ru.example.letterflow.service.mapping.RoomMapper;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RoomService {
 
     @Autowired
@@ -30,7 +31,7 @@ public class RoomService {
     private UserRepo userRepo;
 
     @Transactional
-    public RoomDto addRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
+    public RoomDto createRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
         if(userDto.isBlocked()){
             throw new InsufficientAccessRightsException("Заблокированные пользователи не могут создавать комнаты");
         }
@@ -76,35 +77,6 @@ public class RoomService {
         }
         roomRepo.deleteById(roomDto.getRoomId());
         return "Чат удален";
-    }
-
-    @Transactional
-    public RoomDto addUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
-        if(userDto.isBlocked()){
-            throw new InsufficientAccessRightsException("Вы заблокированы и не можете добавить пользователя в чат");
-        }
-        User user = userRepo.findById(userId).get();
-        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        room.getRoomUsers().add(user);
-        roomRepo.save(room);
-        return RoomMapper.ROOM_MAPPER.toDto(room);
-    }
-
-    @Transactional
-    public RoomDto deleteUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
-        if(!userDto.isAdmin()){
-            throw new InsufficientAccessRightsException("Удалять пользователей из чата может только администратор");
-        }
-        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        List<User> roomUsers = room.getRoomUsers();
-        for(User user : roomUsers){
-            if(user.getUserId() == userId){
-                roomUsers.remove(user);
-            }
-        }
-        room.setRoomUsers(roomUsers);
-        roomRepo.save(room);
-        return RoomMapper.ROOM_MAPPER.toDto(room);
     }
 
 //    @Transactional(readOnly = true)

@@ -20,7 +20,10 @@ public class JwtUserDetailsService implements UserDetailsService {
     @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        UserDto userDto = userService.findUser(login);
+        UserDto userDto = userService.findUserByLogin(login);
+        if(userDto == null){
+            throw new UsernameNotFoundException("Пользователь с логином " + login + " не найден");
+        }
         return null;
     }
 }

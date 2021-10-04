@@ -16,7 +16,13 @@
             <column name="permission" type="varchar(20)" defaultValue="USER">
                 <constraints nullable="false"/>
             </column>
-            <column name="roomId">
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(20)" defaultValue="ACTIVE">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
         </createTable>
@@ -44,25 +50,21 @@
             <column name="userId" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="createDate" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
             <column name="text" type="text"/>
         </createTable>
     </changeSet>
 
     <changeSet id="1.0.3" author="lora.brz">
-        <addForeignKeyConstraint baseTableName="users"
-                                 baseColumnNames="room_roomId"
-                                 constraintName="roomId"
-                                 referencedTableName="rooms"
-                                 referencedColumnNames="roomId"/>
-    </changeSet>
-    <changeSet id="1.0.4" author="lora.brz">
         <addForeignKeyConstraint baseTableName="rooms"
                                  baseColumnNames="user_userId"
                                  constraintName="userId"
                                  referencedTableName="users"
                                  referencedColumnNames="userId"/>
     </changeSet>
-    <changeSet id="1.0.5" author="lora.brz">
+    <changeSet id="1.0.4" author="lora.brz">
         <addForeignKeyConstraint baseTableName="message"
                                  baseColumnNames="room_roomId"
                                  constraintName="roomId"
