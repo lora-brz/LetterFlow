@@ -13,7 +13,7 @@
             <column name="password" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission" type="varchar(20)" defaultValue="USER">
+            <column name="role" type="varchar(20)" defaultValue="USER">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">

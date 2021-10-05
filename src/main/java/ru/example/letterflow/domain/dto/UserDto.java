@@ -1,14 +1,17 @@
 package ru.example.letterflow.domain.dto;
 
-import ru.example.letterflow.domain.entity.Enum.Permission;
+import ru.example.letterflow.domain.entity.Enum.Role;
 
+import java.util.Date;
 import java.util.List;
 
 public class UserDto {
     private Long userId;
     private String login;
-    private Permission permission;
+    private String password;
+    private Role role;
     private List<RoomDto> rooms;
+    private Date updated;
 
     public UserDto() {
     }
@@ -29,12 +32,12 @@ public class UserDto {
         this.login = login;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public Role getRole() {
+        return role;
     }
 
-    public void setPermission(Permission permission) {
-        this.permission = permission;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public List<RoomDto> getRooms() {
@@ -46,14 +49,26 @@ public class UserDto {
     }
 
     public boolean isAdmin(){
-        return this.getPermission() == Permission.ADMIN;
+        return this.getRole() == Role.ADMIN;
     }
 
     public boolean isModerator(){
-        return this.getPermission() == Permission.MODERATOR;
+        return this.getRole() == Role.MODERATOR;
     }
 
     public boolean isBlocked(){
-        return this.getPermission() == Permission.BLOCKED;
+        return this.getRole() == Role.BLOCKED;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Object getStatus() {
+        return null;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 }

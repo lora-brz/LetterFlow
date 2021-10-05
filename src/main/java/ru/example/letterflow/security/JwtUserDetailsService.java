@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.security.jwt.JwtUser;
+import ru.example.letterflow.security.jwt.JwtUserFactory;
 import ru.example.letterflow.service.UserService;
 
 @Service
@@ -24,6 +26,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         if(userDto == null){
             throw new UsernameNotFoundException("Пользователь с логином " + login + " не найден");
         }
-        return null;
+        JwtUser jwtUser = JwtUserFactory.create(userDto);
+        return jwtUser;
     }
 }

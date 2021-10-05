@@ -1,9 +1,9 @@
 package ru.example.letterflow.domain.entity.Enum;
 
-public enum Permission {
+public enum Role {
     ADMIN, MODERATOR, USER, BLOCKED;
 
-    Permission() {
+    Role() {
     }
 }
 

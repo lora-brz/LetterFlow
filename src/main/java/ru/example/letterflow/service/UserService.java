@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
-import ru.example.letterflow.domain.entity.Enum.Permission;
+import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Enum.Status;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
@@ -36,7 +36,7 @@ public class UserService {
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
         User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        user.setPermission(Permission.USER);
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.ACTIVE);
         userRepo.save(user);
@@ -125,17 +125,17 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editPermission(UserDto userDto, Permission permission, Long userId) throws InsufficientAccessRightsException {
+    public UserDto editRole(UserDto userDto, Role role, Long userId) throws InsufficientAccessRightsException {
 //        получить юзера из дто или из репозитория?
 //        User user = UserMapper.USER_MAPPER.toEntity(userDto);
         User user = userRepo.findById(userId).get();
         if (userDto.isAdmin()){
-            user.setPermission(permission);
+            user.setRole(role);
         } else if(userDto.isModerator()){
-            if(permission == Permission.ADMIN || permission == Permission.MODERATOR){
+            if(role == Role.ADMIN || role == Role.MODERATOR){
                 throw new InsufficientAccessRightsException("Вы не можете менять администратора или модератора");
             }
-            user.setPermission(permission);
+            user.setRole(role);
         } else{
             throw new InsufficientAccessRightsException("Вы не можете менять роль пользователя");
         }

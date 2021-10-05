@@ -2,7 +2,7 @@ package ru.example.letterflow.domain.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import ru.example.letterflow.domain.entity.Enum.Permission;
+import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Enum.Status;
 
 import javax.persistence.*;
@@ -25,8 +25,8 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "permission")
-    private Permission permission;
+    @Column(name = "role")
+    private Role role;
 
     @CreatedDate
     @Column(name = "created")
@@ -67,12 +67,12 @@ public class User {
         this.password = password;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public Role getRole() {
+        return role;
     }
 
-    public void setPermission(Permission permission) {
-        this.permission = permission;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public List<Room> getRooms() {
