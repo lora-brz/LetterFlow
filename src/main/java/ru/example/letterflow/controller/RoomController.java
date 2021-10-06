@@ -1,6 +1,7 @@
 package ru.example.letterflow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.entity.Room;
@@ -16,6 +17,7 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('create room')")
     public RoomDto createRoom(@RequestBody Room room,
                               @RequestParam Long userId){
         return null;
@@ -27,11 +29,13 @@ public class RoomController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('rename room')")
     public RoomDto renameRoom(@RequestParam Long roomId){
         return null;
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('delete room')")
     public RoomDto deleteRoom(@RequestParam Long roomId){
         return null;
     }

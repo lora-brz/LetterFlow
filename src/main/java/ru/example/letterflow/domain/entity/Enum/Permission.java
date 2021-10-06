@@ -7,9 +7,10 @@ public enum Permission {
     READ_MESSAGE("read message"),
     DELETE_MESSAGE("delete message"),
     CREATE_ROOM("create room"),
-    ADD_USER("add users in room"),
-    REMOVE_USER("remove a user from a room"),
-    RENAME_ROOM("rename room");
+    ADD_USER("add user in room"),
+    REMOVE_USER("remove from a room"),
+    RENAME_ROOM("rename room"),
+    DELETE_ROOM("delete room");
 
     private final String permission;
 

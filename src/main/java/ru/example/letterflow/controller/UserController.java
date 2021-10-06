@@ -1,6 +1,7 @@
 package ru.example.letterflow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.User;
@@ -33,11 +34,12 @@ public class UserController {
     }
 
     @PutMapping ("/{userId}")
-    public UserDto editUser(@PathVariable Long userId, String name) throws UserAlreadyExistException {
-        return userService.editName(userId, name);
+    public UserDto editUserLogin(@PathVariable Long userId, String login) throws UserAlreadyExistException {
+        return userService.editName(userId, login);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('remove from a room')")
     public UserDto deleteUser(@RequestParam Long userId){
         return null;
     }
