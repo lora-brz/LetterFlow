@@ -33,8 +33,8 @@ public class UserController {
     }
 
     @PutMapping ("/{userId}")
-    public UserDto editUser(@PathVariable UserDto userDto, String name) throws UserAlreadyExistException {
-        return userService.editName(userDto, name);
+    public UserDto editUser(@PathVariable Long userId, String name) throws UserAlreadyExistException {
+        return userService.editName(userId, name);
     }
 
     @DeleteMapping

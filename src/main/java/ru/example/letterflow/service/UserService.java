@@ -102,13 +102,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editName (UserDto userDto, String string) throws UserAlreadyExistException {
+    public UserDto editName (Long userId, String string) throws UserAlreadyExistException {
         if(userRepo.findByUserLogin(string) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
 //        получить юзера из дто или из репозитория?
 //        User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        User user = userRepo.findById(userDto.getUserId()).get();
+        User user = userRepo.findById(userId).get();
         user.setLogin(string);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
