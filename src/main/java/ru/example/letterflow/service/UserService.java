@@ -2,9 +2,15 @@ package ru.example.letterflow.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.example.letterflow.domain.dto.AuthenticationRequestDto;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Enum.Role;
@@ -15,10 +21,13 @@ import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.repository.UserRepo;
+import ru.example.letterflow.security.jwt.JwtTokenProvider;
 import ru.example.letterflow.service.mapping.RoomMapper;
 import ru.example.letterflow.service.mapping.UserMapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -31,7 +40,7 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserDto registrationUser(UserDto userDto) throws UserAlreadyExistException {
+    public UserDto saveUser(UserDto userDto) throws UserAlreadyExistException {
         if (userRepo.findByUserLogin(userDto.getLogin()) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
@@ -41,6 +50,22 @@ public class UserService {
         user.setStatus(Status.ACTIVE);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public ResponseEntity<?> loginUser(AuthenticationRequestDto requestDto, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager){
+        try{
+            String login = requestDto.getLogin();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
+            User user = userRepo.findByUserLogin(login);
+            String token = jwtTokenProvider.createToken(login, user.getRole());
+            Map<Object, Object> response = new HashMap<>();
+            response.put("login", login);
+            response.put("token", token);
+            return ResponseEntity.ok(response);
+        }catch (AuthenticationException ex){
+            throw new BadCredentialsException("Invalid login or password");
+        }
     }
 
     @Transactional
