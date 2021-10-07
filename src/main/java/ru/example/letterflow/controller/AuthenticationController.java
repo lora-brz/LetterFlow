@@ -1,25 +1,28 @@
 package ru.example.letterflow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.AuthenticationRequestDto;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.security.jwt.JwtTokenProvider;
 import ru.example.letterflow.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "api/auth")
 public class AuthenticationController {
 
     @Autowired
@@ -31,7 +34,14 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) throws UserNotFoundException {
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity authenticate(@RequestBody AuthenticationRequestDto requestDto) throws UserNotFoundException {
         try{
             String login = requestDto.getLogin();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
@@ -43,8 +53,18 @@ public class AuthenticationController {
             return ResponseEntity.ok(response);
         }catch (AuthenticationException ex){
             throw new BadCredentialsException("Invalid login or password");
-        }catch (UserNotFoundException ex) {
-            throw new UserNotFoundException("User not found");
         }
     }
+
+    @PostMapping("/logout")
+    public void logout (HttpServletRequest request, HttpServletResponse response){
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, null);
+    }
+
+    @GetMapping("/registration")
+    public UserDto registration(UserDto userDto) throws UserAlreadyExistException {
+        return userService.registrationUser(userDto);
+    }
+
 }
