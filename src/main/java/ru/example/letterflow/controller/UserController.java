@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.UserDto;
-import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.exceptions.ImpossibleActionException;
+import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.service.UserService;
@@ -18,30 +19,51 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public UserDto saveUser(@RequestBody User user){
-        return null;
-    }
-
     @GetMapping ("/{userId}")
+    @PreAuthorize("hasAuthority('every')")
     public UserDto getOneUser(@PathVariable Long userId) throws UserNotFoundException {
         return userService.findUserById(userId);
     }
 
-    @GetMapping
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('every')")
     public List<UserDto> getAllUsers(){
         return userService.findAll();
     }
 
-    @PutMapping ("/{userId}")
-    public UserDto editUserLogin(@PathVariable Long userId, String login) throws UserAlreadyExistException {
-        return userService.editName(userId, login);
+    @PutMapping ("/edit/login")
+    @PreAuthorize("hasAuthority('every')")
+    public UserDto editUserLogin(@RequestParam Long userId,
+                                 Long id, String login) throws UserAlreadyExistException, InsufficientAccessRightsException {
+        return userService.editName(userId, id, login);
     }
 
-    @DeleteMapping
-    @PreAuthorize("hasAuthority('remove from a room')")
-    public UserDto deleteUser(@RequestParam Long userId){
-        return null;
+    @PutMapping ("/edit/pass")
+    @PreAuthorize("hasAuthority('every')")
+    public UserDto editUserPass(@RequestParam Long userId,
+                                Long id, String login) throws InsufficientAccessRightsException {
+        return userService.editPassword(userId, id, login);
+    }
+
+    @PutMapping("/room/in")
+    @PreAuthorize("hasAuthority('user')")
+    public UserDto inviteRoom(@RequestParam Long userId,
+                                String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException {
+        return userService.addUserInRoom(userId, roomName, login);
+    }
+
+    @PutMapping("/room/out")
+    @PreAuthorize("hasAuthority('every')")
+    public UserDto leaveRoom(@RequestParam Long userId,
+                             String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException, ImpossibleActionException {
+        return userService.deleteUserInRoom(userId, roomName, login);
+    }
+
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("getAuthority('admin')")
+    public UserDto changeRole(@RequestParam Long userId, String login, String role) throws InsufficientAccessRightsException {
+        return userService.editRole(userId, login, role);
     }
 
 

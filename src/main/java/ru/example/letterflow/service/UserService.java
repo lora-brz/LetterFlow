@@ -17,17 +17,17 @@ import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Enum.Status;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.exceptions.ImpossibleActionException;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.UserAlreadyExistException;
 import ru.example.letterflow.exceptions.UserNotFoundException;
+import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.security.jwt.JwtTokenProvider;
 import ru.example.letterflow.service.mapping.RoomMapper;
 import ru.example.letterflow.service.mapping.UserMapper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -35,6 +35,9 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private RoomRepo roomRepo;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -68,36 +71,6 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public UserDto addUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
-        if(userDto.isBlocked()){
-            throw new InsufficientAccessRightsException("Вы заблокированы и не можете добавить пользователя в чат");
-        }
-        User user = userRepo.findById(userId).get();
-        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        user.getRooms().add(room);
-        userRepo.save(user);
-        return UserMapper.USER_MAPPER.toDto(user);
-    }
-
-    @Transactional
-    public UserDto deleteUserInRoom(UserDto userDto, RoomDto roomDto, Long userId) throws InsufficientAccessRightsException {
-        if(!userDto.isAdmin()){
-            throw new InsufficientAccessRightsException("Удалять пользователей из чата может только администратор");
-        }
-        Room deleteRoom = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        List<Room> rooms = user.getRooms();
-        for(Room room : rooms){
-            if(room.getRoomId() == deleteRoom.getRoomId()){
-                rooms.remove(deleteRoom);
-            }
-        }
-        user.setRooms(rooms);
-        userRepo.save(user);
-        return UserMapper.USER_MAPPER.toDto(user);
-    }
-
     @Transactional(readOnly = true)
     public UserDto findUserByLogin(String login) throws UserNotFoundException {
         User user = userRepo.findByUserLogin(login);
@@ -127,36 +100,85 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editName (Long userId, String string) throws UserAlreadyExistException {
+    public UserDto addUserInRoom(Long userId, String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException {
+
+        if(findUserById(userId).isBlocked()){
+            throw new InsufficientAccessRightsException("Вы заблокированы и не можете добавить пользователя в чат");
+        }
+        if(findUserByLogin(login).isBlocked()){
+            throw new InsufficientAccessRightsException("Вы не можете добавить заблокированного пользователя в чат");
+        }
+
+        User user = userRepo.findById(userId).get();
+        Room room = roomRepo.findByRoomName(roomName);
+        user.getRooms().add(room.getRoomId());
+        userRepo.save(user);
+        return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public UserDto deleteUserInRoom(Long userId, String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException, ImpossibleActionException {
+        Room room = roomRepo.findByRoomName(roomName);
+        if(!findUserById(userId).isAdmin() || !userId.equals(room.getUserId())){
+            throw new InsufficientAccessRightsException("Удалять пользователей из чата может только владелец или администратор");
+        }
+        if(Objects.equals(userId, room.getUserId())){
+            throw new ImpossibleActionException("Вы не можете покинуть чат, т.к вы его владелец");
+        }
+
+        User user = UserMapper.USER_MAPPER.toEntity(findUserByLogin(login));
+        List<Long> rooms = user.getRooms();
+        Long roomId = room.getRoomId();
+        for(Long id : rooms){
+            if(id.equals(roomId)){
+                rooms.remove(roomId);
+            }
+        }
+        user.setRooms(rooms);
+        userRepo.save(user);
+        return UserMapper.USER_MAPPER.toDto(user);
+    }
+
+    @Transactional
+    public UserDto editName (Long userId, Long id, String string) throws UserAlreadyExistException, InsufficientAccessRightsException {
+        if(!Objects.equals(userId, id)){
+            throw new InsufficientAccessRightsException("Вы не можете менять чужой логин!");
+        }
         if(userRepo.findByUserLogin(string) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
-//        получить юзера из дто или из репозитория?
-//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        User user = userRepo.findById(userId).get();
+
+        User user = userRepo.findById(id).get();
         user.setLogin(string);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
 
     @Transactional
-    public UserDto editPassword(UserDto userDto, String string){
-//        получить юзера из дто или из репозитория?
-//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
-        User user = userRepo.findById(userDto.getUserId()).get();
-        user.setPassword(string);
+    public UserDto editPassword(Long userId, Long id, String string) throws InsufficientAccessRightsException {
+        if(!Objects.equals(userId, id)){
+            throw new InsufficientAccessRightsException("Вы не можете менять чужой пароль!");
+        }
+
+        User user = userRepo.findById(userId).get();
+        user.setPassword(passwordEncoder.encode(string));
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
 
     @Transactional
-    public UserDto editRole(UserDto userDto, Role role, Long userId) throws InsufficientAccessRightsException {
-//        получить юзера из дто или из репозитория?
-//        User user = UserMapper.USER_MAPPER.toEntity(userDto);
+    public UserDto editRole(Long userId, String login, String userRole) throws InsufficientAccessRightsException {
         User user = userRepo.findById(userId).get();
-        if (userDto.isAdmin()){
+        Map<String, Role> roles = new HashMap<>();
+        roles.put("admin", Role.ADMIN);
+        roles.put("moderator", Role.MODERATOR);
+        roles.put("user", Role.USER);
+        roles.put("blocked", Role.BLOCKED);
+        Role role = roles.get(userRole);
+
+        if (user.getRole().equals(Role.ADMIN)){
             user.setRole(role);
-        } else if(userDto.isModerator()){
+        } else if(user.getRole().equals(Role.MODERATOR)){
             if(role == Role.ADMIN || role == Role.MODERATOR){
                 throw new InsufficientAccessRightsException("Вы не можете менять администратора или модератора");
             }

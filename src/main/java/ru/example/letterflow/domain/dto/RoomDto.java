@@ -1,6 +1,5 @@
 package ru.example.letterflow.domain.dto;
 
-import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
 

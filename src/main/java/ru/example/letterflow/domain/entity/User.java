@@ -41,7 +41,7 @@ public class User {
     private Status status;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userId")
-    private List<Room> rooms;
+    private List<Long> rooms;
 
     public Long getUserId() {
         return userId;
@@ -75,11 +75,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Room> getRooms() {
+    public List<Long> getRooms() {
         return rooms;
     }
 
-    public void setRooms(List<Room> rooms) {
+    public void setRooms(List<Long> rooms) {
         this.rooms = rooms;
     }
 
