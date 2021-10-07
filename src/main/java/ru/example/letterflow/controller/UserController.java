@@ -61,7 +61,7 @@ public class UserController {
 
 
     @DeleteMapping("/delete")
-    @PreAuthorize("getAuthority('admin')")
+    @PreAuthorize("getAuthority('moderator')")
     public UserDto changeRole(@RequestParam Long userId, String login, String role) throws InsufficientAccessRightsException {
         return userService.editRole(userId, login, role);
     }

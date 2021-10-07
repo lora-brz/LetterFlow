@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.AuthenticationRequestDto;
-import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Enum.Status;
@@ -24,10 +23,12 @@ import ru.example.letterflow.exceptions.UserNotFoundException;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.security.jwt.JwtTokenProvider;
-import ru.example.letterflow.service.mapping.RoomMapper;
 import ru.example.letterflow.service.mapping.UserMapper;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
