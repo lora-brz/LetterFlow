@@ -8,12 +8,14 @@ import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
+import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.repository.MessageRepo;
 import ru.example.letterflow.repository.RoomRepo;
 import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
+import ru.example.letterflow.service.mapping.UserMapper;
 
 import java.util.List;
 
@@ -21,14 +23,14 @@ import java.util.List;
 @Slf4j
 public class RoomService {
 
-    @Autowired
-    private RoomRepo roomRepo;
+    private final RoomRepo roomRepo;
+    private final MessageRepo messageRepo;
 
     @Autowired
-    private MessageRepo messageRepo;
-
-    @Autowired
-    private UserRepo userRepo;
+    public RoomService(RoomRepo roomRepo, MessageRepo messageRepo, UserRepo userRepo) {
+        this.roomRepo = roomRepo;
+        this.messageRepo = messageRepo;
+    }
 
     @Transactional
     public RoomDto createRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
@@ -44,49 +46,46 @@ public class RoomService {
         return RoomMapper.ROOM_MAPPER.toDto(room);
     }
 
+    @Transactional(readOnly = true)
+    public List<RoomDto> findAllRooms(){
+        List<Room> rooms = roomRepo.findAll();
+        List<RoomDto> roomDtos = null;
+        for(Room room : rooms){
+            roomDtos.add(RoomMapper.ROOM_MAPPER.toDto(room));
+        }
+        return roomDtos;
+    }
+
     @Transactional
-    public RoomDto renameRoom(UserDto userDto, RoomDto roomDto, String string) throws RoomAlreadyExistException, InsufficientAccessRightsException {
-//        получить чат из дто или из репозитория?
-//        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        if(!userDto.isAdmin()){
-            throw new InsufficientAccessRightsException("Переименовывать комнату может только владелец");
+    public RoomDto renameRoom(User user, Room room, String string) throws RoomAlreadyExistException, InsufficientAccessRightsException {
+        UserDto userDto = UserMapper.USER_MAPPER.toDto(user);
+        if(!userDto.isAdmin() || !user.getUserId().equals(room.getUserId())){
+            throw new InsufficientAccessRightsException("Переименовывать комнату может только владелец или администратор");
         }
         if(roomRepo.findByRoomName(string) != null){
             throw new RoomAlreadyExistException("Комната с таким именем уже существует");
         }
-        Room room = roomRepo.findByRoomId(roomDto.getRoomId());
         room.setRoomName(string);
         return RoomMapper.ROOM_MAPPER.toDto(room);
     }
 
     @Transactional(readOnly = true)
-    public List<String> findAllMessagesByRoom(RoomDto roomDto){
+    public List<String> findAllMessagesByRoom(Room room){
         List<Message> messages = messageRepo.findAll();
         List<String> messagesInRoom = null;
         for(Message message : messages){
-            if(message.getRoomId() == roomDto.getRoomId())
+            if(message.getRoomId() == room.getRoomId())
                 messagesInRoom.add(message.getText());
         }
         return messagesInRoom;
     }
 
     @Transactional
-    public String deleteRoom(UserDto userDto, RoomDto roomDto) throws InsufficientAccessRightsException {
-        if(userDto.getUserId() != roomDto.getUserId()){
+    public String deleteRoom(User user, Room room) throws InsufficientAccessRightsException {
+        if(!user.getUserId().equals(room.getUserId())){
             throw new InsufficientAccessRightsException("Чат может удалить только его создатель");
         }
-        roomRepo.deleteById(roomDto.getRoomId());
+        roomRepo.deleteById(room.getRoomId());
         return "Чат удален";
     }
-
-//    @Transactional(readOnly = true)
-//    public List<RoomDto> findAllRoomsByUser(Long userId){
-//        List<Room> rooms = roomRepo.findAll();
-//        List<RoomDto> roomDtos = null;
-//        for(Room room : rooms){
-//            if(room.getUserId() == userId)
-//                roomDtos.add(RoomMapper.ROOM_MAPPER.toDto(room));
-//        }
-//        return roomDtos;
-//    }
 }

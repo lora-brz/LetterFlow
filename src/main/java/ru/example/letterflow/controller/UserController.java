@@ -63,15 +63,15 @@ public class UserController {
 
 
     @PutMapping("/role/${login}/${role}")
-    @PreAuthorize("getAuthority('moderator')")
+    @PreAuthorize("hasAuthority('moderator')")
     public UserDto changeRole(@RequestParam Long userId,
                               @PathVariable String login,
                               @PathVariable String role) throws InsufficientAccessRightsException, UserNotFoundException {
         return userService.editRole(userId, login, role);
     }
 
-    @DeleteMapping("/delete")
-    @PreAuthorize("/delete/${login}")
+    @DeleteMapping("/delete/${login}")
+    @PreAuthorize("hasAuthority('admin')")
     public String deleteUser(@RequestParam Long userId,
             @PathVariable String login) throws UserNotFoundException, InsufficientAccessRightsException {
         UserDto userDto = userService.findUserByLogin(login);

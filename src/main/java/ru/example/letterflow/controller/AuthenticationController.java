@@ -22,15 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    @Autowired
     private final AuthenticationManager authenticationManager;
-
-    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
     private final UserService userService;
 
+    @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -38,7 +34,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto requestDto) throws UserNotFoundException {
+    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto requestDto) {
         return userService.loginUser(requestDto, jwtTokenProvider, authenticationManager);
     }
 

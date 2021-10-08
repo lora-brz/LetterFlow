@@ -5,7 +5,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.entity.Room;
+import ru.example.letterflow.domain.entity.User;
+import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
+import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.service.RoomService;
+import ru.example.letterflow.service.mapping.RoomMapper;
+import ru.example.letterflow.service.mapping.UserMapper;
 
 import java.util.List;
 
@@ -16,28 +21,32 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('create room')")
+    @PostMapping("/create")
+    @PreAuthorize("hasAuthority('user')")
     public RoomDto createRoom(@RequestBody Room room,
-                              @RequestParam Long userId){
-        return null;
+                              @RequestBody User user) throws InsufficientAccessRightsException, RoomAlreadyExistException {
+        return roomService.createRoom(RoomMapper.ROOM_MAPPER.toDto(room), UserMapper.USER_MAPPER.toDto(user));
     }
 
-    @GetMapping
-    public List<RoomDto> getAllRooms(@RequestParam Long userId){
-        return null;
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('every')")
+    public List<RoomDto> getAllRooms(){
+        return roomService.findAllRooms();
     }
 
-    @PutMapping
-    @PreAuthorize("hasAuthority('rename room')")
-    public RoomDto renameRoom(@RequestParam Long roomId){
-        return null;
+    @PutMapping("/rename/${roomName}")
+    @PreAuthorize("hasAuthority('user')")
+    public RoomDto renameRoom(@RequestBody User user,
+                              @RequestBody Room room,
+                              @PathVariable String roomName) throws InsufficientAccessRightsException, RoomAlreadyExistException {
+        return roomService.renameRoom(user, room, roomName);
     }
 
-    @DeleteMapping
-    @PreAuthorize("hasAuthority('delete room')")
-    public RoomDto deleteRoom(@RequestParam Long roomId){
-        return null;
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('user')")
+    public String deleteRoom(@RequestBody User user,
+                              @RequestBody Room room) throws InsufficientAccessRightsException {
+        return roomService.deleteRoom(user, room);
     }
 
 //    @PostMapping
