@@ -31,39 +31,50 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PutMapping ("/edit/login")
+    @PutMapping ("/edit/login/${login}")
     @PreAuthorize("hasAuthority('every')")
     public UserDto editUserLogin(@RequestParam Long userId,
-                                 Long id, String login) throws UserAlreadyExistException, InsufficientAccessRightsException {
-        return userService.editName(userId, id, login);
+                                 @PathVariable String login) throws UserAlreadyExistException {
+        return userService.editName(userId, login);
     }
 
-    @PutMapping ("/edit/pass")
+    @PutMapping ("/edit/pass/${pass)")
     @PreAuthorize("hasAuthority('every')")
     public UserDto editUserPass(@RequestParam Long userId,
-                                Long id, String login) throws InsufficientAccessRightsException {
-        return userService.editPassword(userId, id, login);
+                                @PathVariable String pass) {
+        return userService.editPassword(userId, pass);
     }
 
-    @PutMapping("/room/in")
+    @PutMapping("/room/in/${roomName}/${login}")
     @PreAuthorize("hasAuthority('user')")
     public UserDto inviteRoom(@RequestParam Long userId,
-                                String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException {
+                              @PathVariable String roomName,
+                              @PathVariable String login) throws InsufficientAccessRightsException, UserNotFoundException {
         return userService.addUserInRoom(userId, roomName, login);
     }
 
-    @PutMapping("/room/out")
+    @PutMapping("/room/out/${roomName}/${login}")
     @PreAuthorize("hasAuthority('every')")
     public UserDto leaveRoom(@RequestParam Long userId,
-                             String roomName, String login) throws InsufficientAccessRightsException, UserNotFoundException, ImpossibleActionException {
+                             @PathVariable String roomName,
+                             @PathVariable String login) throws InsufficientAccessRightsException, UserNotFoundException, ImpossibleActionException {
         return userService.deleteUserInRoom(userId, roomName, login);
     }
 
 
-    @DeleteMapping("/delete")
+    @PutMapping("/role/${login}/${role}")
     @PreAuthorize("getAuthority('moderator')")
-    public UserDto changeRole(@RequestParam Long userId, String login, String role) throws InsufficientAccessRightsException {
+    public UserDto changeRole(@RequestParam Long userId,
+                              @PathVariable String login,
+                              @PathVariable String role) throws InsufficientAccessRightsException, UserNotFoundException {
         return userService.editRole(userId, login, role);
+    }
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("/delete/${login}")
+    public String deleteUser(@PathVariable String login) throws UserNotFoundException {
+        UserDto userDto = userService.findUserByLogin(login);
+        return userService.deleteUser(userDto);
     }
 
 

@@ -141,25 +141,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editName (Long userId, Long id, String string) throws UserAlreadyExistException, InsufficientAccessRightsException {
-        if(!Objects.equals(userId, id)){
-            throw new InsufficientAccessRightsException("Вы не можете менять чужой логин!");
-        }
+    public UserDto editName (Long userId, String string) throws UserAlreadyExistException {
         if(userRepo.findByUserLogin(string) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
-
-        User user = userRepo.findById(id).get();
+        User user = userRepo.findById(userId).get();
         user.setLogin(string);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }
 
     @Transactional
-    public UserDto editPassword(Long userId, Long id, String string) throws InsufficientAccessRightsException {
-        if(!Objects.equals(userId, id)){
-            throw new InsufficientAccessRightsException("Вы не можете менять чужой пароль!");
-        }
+    public UserDto editPassword(Long userId, String string)  {
 
         User user = userRepo.findById(userId).get();
         user.setPassword(passwordEncoder.encode(string));
@@ -168,7 +161,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editRole(Long userId, String login, String userRole) throws InsufficientAccessRightsException {
+    public UserDto editRole(Long userId, String login, String userRole) throws InsufficientAccessRightsException, UserNotFoundException {
+        if(!Objects.equals(login, userRepo.findByUserLogin(login))){
+            throw new UserNotFoundException ("Пользователь " + login + " не найден");
+        }
         User user = userRepo.findById(userId).get();
         Map<String, Role> roles = new HashMap<>();
         roles.put("admin", Role.ADMIN);
