@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
-import ru.example.letterflow.domain.entity.Message;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
@@ -67,17 +66,6 @@ public class RoomService {
         }
         room.setRoomName(string);
         return RoomMapper.ROOM_MAPPER.toDto(room);
-    }
-
-    @Transactional(readOnly = true)
-    public List<String> findAllMessagesByRoom(Room room){
-        List<Message> messages = messageRepo.findAll();
-        List<String> messagesInRoom = null;
-        for(Message message : messages){
-            if(message.getRoomId() == room.getRoomId())
-                messagesInRoom.add(message.getText());
-        }
-        return messagesInRoom;
     }
 
     @Transactional

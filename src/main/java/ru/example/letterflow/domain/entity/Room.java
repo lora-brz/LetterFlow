@@ -22,7 +22,7 @@ public class Room {
     private String roomName;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_userId", nullable = false)
+    @JoinColumn(name = "users_userId")
     private Long userId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "roomId")
