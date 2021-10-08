@@ -26,7 +26,7 @@ public class RoomService {
     private final MessageRepo messageRepo;
 
     @Autowired
-    public RoomService(RoomRepo roomRepo, MessageRepo messageRepo, UserRepo userRepo) {
+    public RoomService(RoomRepo roomRepo, MessageRepo messageRepo) {
         this.roomRepo = roomRepo;
         this.messageRepo = messageRepo;
     }

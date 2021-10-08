@@ -17,14 +17,10 @@ public final class JwtUserFactory {
 
     public static JwtUser create(UserDto userDto) {
         return new JwtUser(
-                userDto.getUserId(),
                 userDto.getLogin(),
                 userDto.getPassword(),
-                userDto.getRole(),
-                userDto.getRooms(),
-                userDto.getStatus().equals(Status.ACTIVE),
-                userDto.getUpdated(),
-                mapToGrantedAuthorities(userDto.getRole())
+                mapToGrantedAuthorities(userDto.getRole()),
+                userDto.getStatus().equals(Status.ACTIVE)
         );
     }
     private static List<GrantedAuthority> mapToGrantedAuthorities(Role role){

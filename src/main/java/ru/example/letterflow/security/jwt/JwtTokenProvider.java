@@ -2,13 +2,13 @@ package ru.example.letterflow.security.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.exceptions.JwtAuthenticationException;
@@ -21,14 +21,19 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.token.secret}")
+    @Value("letterbox")
     private String secret;
-
-    @Value("${jwt.token.expired}")
+    @Value("3600000")
     private Long validityInMillisec;
+    @Value("Authorization")
+    private String autorizationHeader;
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostConstruct
     protected void init(){
@@ -60,12 +65,12 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")){
-            int l = bearerToken.length();
-            return bearerToken.substring(7, l);
-        }
-        return null;
+//        String bearerToken = request.getHeader("Authorization");
+//        if (bearerToken != null && bearerToken.startsWith("Bearer_")){
+//            int l = bearerToken.length();
+//            return bearerToken.substring(7, l);
+//        }
+        return request.getHeader(autorizationHeader);
     }
 
     public boolean validateToken(String token){
@@ -73,7 +78,7 @@ public class JwtTokenProvider {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         }catch (JwtException | IllegalArgumentException ex){
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
+            throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
         }
     }
     private String getRole(Role role){
