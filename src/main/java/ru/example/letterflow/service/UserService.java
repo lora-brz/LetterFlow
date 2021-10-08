@@ -188,7 +188,11 @@ public class UserService {
     }
 
     @Transactional
-    public String deleteUser(UserDto userDto){
+    public String deleteUser(Long userId, UserDto userDto) throws InsufficientAccessRightsException {
+        User user = userRepo.findById(userId).get();
+        if (!user.getRole().equals(Role.ADMIN) || !userId.equals(userDto.getUserId())){
+            throw new InsufficientAccessRightsException("Вы не можете удалять пользователей");
+        }
         userRepo.deleteById(userDto.getUserId());
         return "Пользователь удален";
     }

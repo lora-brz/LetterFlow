@@ -72,9 +72,10 @@ public class UserController {
 
     @DeleteMapping("/delete")
     @PreAuthorize("/delete/${login}")
-    public String deleteUser(@PathVariable String login) throws UserNotFoundException {
+    public String deleteUser(@RequestParam Long userId,
+            @PathVariable String login) throws UserNotFoundException, InsufficientAccessRightsException {
         UserDto userDto = userService.findUserByLogin(login);
-        return userService.deleteUser(userDto);
+        return userService.deleteUser(userId, userDto);
     }
 
 
