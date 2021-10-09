@@ -2,9 +2,9 @@ package ru.example.letterflow.security.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.example.letterflow.domain.dto.UserDto;
 import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Enum.Status;
+import ru.example.letterflow.domain.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,12 @@ public final class JwtUserFactory {
     public JwtUserFactory() {
     }
 
-    public static JwtUser create(UserDto userDto) {
+    public static JwtUser create(User user) {
         return new JwtUser(
-                userDto.getLogin(),
-                userDto.getPassword(),
-                mapToGrantedAuthorities(userDto.getRole()),
-                userDto.getStatus().equals(Status.ACTIVE)
+                user.getLogin(),
+                user.getPassword(),
+                mapToGrantedAuthorities(user.getRole()),
+                user.getStatus().equals(Status.ACTIVE)
         );
     }
     private static List<GrantedAuthority> mapToGrantedAuthorities(Role role){

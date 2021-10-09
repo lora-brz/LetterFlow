@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.example.letterflow.repository.UserRepo;
 
+
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepo userRepo;

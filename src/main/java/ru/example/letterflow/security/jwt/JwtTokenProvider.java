@@ -15,24 +15,32 @@ import ru.example.letterflow.exceptions.JwtAuthenticationException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenProvider {
 
+    @Autowired
     @Value("letterbox")
     private String secret;
+    @Autowired
     @Value("3600000")
-    private Long validityInMillisec;
+    private final Long validityInMillisec;
+    @Autowired
     @Value("Authorization")
-    private String autorizationHeader;
+    private final String autorizationHeader;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    @Autowired
+    public JwtTokenProvider(UserDetailsService userDetailsService, Long validityInMillisec, String autorizationHeader) {
         this.userDetailsService = userDetailsService;
+        this.validityInMillisec = validityInMillisec;
+        this.autorizationHeader = autorizationHeader;
     }
 
     @PostConstruct
@@ -81,7 +89,9 @@ public class JwtTokenProvider {
             throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
         }
     }
-    private String getRole(Role role){
-        return role.name();
+    private List<String> getRole(Role role){
+        List<String> roles = new ArrayList<>();
+        roles.add(role.name());
+        return roles;
     }
 }

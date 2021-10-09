@@ -1,5 +1,6 @@
 package ru.example.letterflow.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.dto.RoomDto;
@@ -16,9 +17,16 @@ import ru.example.letterflow.service.UserService;
 @RequestMapping("/bot")
 public class BotController {
 
-    private RoomService roomService;
-    private RoomRepo roomRepo;
-    private UserService userService;
+    private final RoomService roomService;
+    private final RoomRepo roomRepo;
+    private final UserService userService;
+
+    @Autowired
+    public BotController(RoomService roomService, RoomRepo roomRepo, UserService userService) {
+        this.roomService = roomService;
+        this.roomRepo = roomRepo;
+        this.userService = userService;
+    }
 
     @GetMapping("/room_create_${roomName}")
     @PreAuthorize("hasAuthority('user')")

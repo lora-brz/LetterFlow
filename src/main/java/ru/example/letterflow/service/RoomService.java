@@ -13,7 +13,6 @@ import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
 import ru.example.letterflow.exceptions.RoomAlreadyExistException;
 import ru.example.letterflow.repository.MessageRepo;
 import ru.example.letterflow.repository.RoomRepo;
-import ru.example.letterflow.repository.UserRepo;
 import ru.example.letterflow.service.mapping.RoomMapper;
 import ru.example.letterflow.service.mapping.UserMapper;
 

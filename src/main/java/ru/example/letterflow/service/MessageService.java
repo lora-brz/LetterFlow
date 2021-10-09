@@ -15,7 +15,6 @@ import ru.example.letterflow.service.mapping.MessageMapper;
 
 import java.util.List;
 
-
 @Service
 @Slf4j
 public class MessageService {
