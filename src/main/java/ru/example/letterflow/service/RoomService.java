@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.example.letterflow.domain.dto.RoomDto;
 import ru.example.letterflow.domain.dto.UserDto;
+import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.Room;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.InsufficientAccessRightsException;
@@ -32,15 +33,17 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomDto createRoom(RoomDto roomDto, UserDto userDto) throws RoomAlreadyExistException, InsufficientAccessRightsException {
-        if(userDto.isBlocked()){
+    public RoomDto createRoom(User user, String roomName, Boolean personal) throws RoomAlreadyExistException, InsufficientAccessRightsException {
+        if(user.getRole().equals(Role.BLOCKED)){
             throw new InsufficientAccessRightsException("Заблокированные пользователи не могут создавать комнаты");
         }
-        if(roomRepo.findByRoomName(roomDto.getRoomName()) != null){
+        if(roomRepo.findByRoomName(roomName) != null){
             throw new RoomAlreadyExistException("Комната с таким именем уже существует");
         }
-        Room room = RoomMapper.ROOM_MAPPER.toEntity(roomDto);
-        room.setUserId(userDto.getUserId());
+        Room room = new Room();
+        room.setUserId(user.getUserId());
+        room.setRoomName(roomName);
+        room.setPersonal(personal);
         roomRepo.save(room);
         return RoomMapper.ROOM_MAPPER.toDto(room);
     }
@@ -70,8 +73,8 @@ public class RoomService {
 
     @Transactional
     public String deleteRoom(User user, Room room) throws InsufficientAccessRightsException {
-        if(!user.getUserId().equals(room.getUserId())){
-            throw new InsufficientAccessRightsException("Чат может удалить только его создатель");
+        if(!user.getUserId().equals(room.getUserId()) || !user.getRole().equals(Role.ADMIN)){
+            throw new InsufficientAccessRightsException("Чат может удалить только его создатель или администратор");
         }
         roomRepo.deleteById(room.getRoomId());
         return "Чат удален";

@@ -141,12 +141,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto editName (Long userId, String string) throws UserAlreadyExistException {
-        if(userRepo.findByUserLogin(string) != null){
+    public UserDto editName (Long userId,String login, String newLogin) throws UserAlreadyExistException, UserNotFoundException, InsufficientAccessRightsException {
+        if(!findUserById(userId).isAdmin() || !userId.equals(findUserByLogin(login).getUserId())){
+            throw new InsufficientAccessRightsException("Вы не можете менять имя пользователю " + login);
+        }
+        if(userRepo.findByUserLogin(newLogin) != null){
             throw new UserAlreadyExistException("Такой логин уже занят");
         }
-        User user = userRepo.findById(userId).get();
-        user.setLogin(string);
+        User user = userRepo.findByUserLogin(login);
+        user.setLogin(newLogin);
         userRepo.save(user);
         return UserMapper.USER_MAPPER.toDto(user);
     }

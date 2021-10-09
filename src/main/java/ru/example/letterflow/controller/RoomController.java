@@ -21,11 +21,19 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
-    @PostMapping("/create")
+    @PostMapping("/create/${roomName}")
     @PreAuthorize("hasAuthority('user')")
-    public RoomDto createRoom(@RequestBody Room room,
-                              @RequestBody User user) throws InsufficientAccessRightsException, RoomAlreadyExistException {
-        return roomService.createRoom(RoomMapper.ROOM_MAPPER.toDto(room), UserMapper.USER_MAPPER.toDto(user));
+    public RoomDto createRoom(@RequestBody User user,
+                              @PathVariable String roomName) throws InsufficientAccessRightsException, RoomAlreadyExistException {
+        return roomService.createRoom(user, roomName, false);
+    }
+
+    @PostMapping("/create/${roomName}-p")
+    @PreAuthorize("hasAuthority('user')")
+    public RoomDto createPersonalRoom(@RequestBody User user,
+                              @PathVariable String roomName
+                              ) throws InsufficientAccessRightsException, RoomAlreadyExistException {
+        return roomService.createRoom(user, roomName, true);
     }
 
     @GetMapping("/all")

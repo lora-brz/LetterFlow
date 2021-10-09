@@ -31,38 +31,38 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PutMapping ("/edit/login/${login}")
+    @PutMapping ("/edit_login/${newLogin}")
     @PreAuthorize("hasAuthority('every')")
     public UserDto editUserLogin(@RequestParam Long userId,
-                                 @PathVariable String login) throws UserAlreadyExistException {
-        return userService.editName(userId, login);
+                                 @RequestParam String login,
+                                 @PathVariable String newLogin) throws UserAlreadyExistException, UserNotFoundException, InsufficientAccessRightsException {
+        return userService.editName(userId, login, newLogin);
     }
 
-    @PutMapping ("/edit/pass/${pass)")
+    @PutMapping ("/edit_pass/${pass)")
     @PreAuthorize("hasAuthority('every')")
     public UserDto editUserPass(@RequestParam Long userId,
                                 @PathVariable String pass) {
         return userService.editPassword(userId, pass);
     }
 
-    @PutMapping("/room/in/${roomName}/${login}")
+    @PutMapping("/room_in/${roomName}_${login}")
     @PreAuthorize("hasAuthority('user')")
-    public UserDto inviteRoom(@RequestParam Long userId,
+    public UserDto inRoom(@RequestParam Long userId,
                               @PathVariable String roomName,
                               @PathVariable String login) throws InsufficientAccessRightsException, UserNotFoundException {
         return userService.addUserInRoom(userId, roomName, login);
     }
 
-    @PutMapping("/room/out/${roomName}/${login}")
+    @PutMapping("/room_out/${roomName}_${login}")
     @PreAuthorize("hasAuthority('every')")
-    public UserDto leaveRoom(@RequestParam Long userId,
+    public UserDto outRoom(@RequestParam Long userId,
                              @PathVariable String roomName,
                              @PathVariable String login) throws InsufficientAccessRightsException, UserNotFoundException, ImpossibleActionException {
         return userService.deleteUserInRoom(userId, roomName, login);
     }
 
-
-    @PutMapping("/role/${login}/${role}")
+    @PutMapping("/role/${login}_${role}")
     @PreAuthorize("hasAuthority('moderator')")
     public UserDto changeRole(@RequestParam Long userId,
                               @PathVariable String login,
