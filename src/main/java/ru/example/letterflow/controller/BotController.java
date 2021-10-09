@@ -79,6 +79,13 @@ public class BotController {
         return userService.deleteUserInRoom(userId, roomName, login);
     }
 
+    @PutMapping ("/user_rename_${newLogin}")
+    @PreAuthorize("hasAuthority('every')")
+    public UserDto renameUser(@RequestParam Long userId,
+                              @PathVariable String newLogin) throws UserAlreadyExistException, UserNotFoundException, InsufficientAccessRightsException {
+        return userService.editName(userId, userService.findUserById(userId).getLogin(), newLogin);
+    }
+
     @PutMapping ("/user_rename_${login}_${newLogin}")
     @PreAuthorize("hasAuthority('every')")
     public UserDto renameUser(@RequestParam Long userId,
