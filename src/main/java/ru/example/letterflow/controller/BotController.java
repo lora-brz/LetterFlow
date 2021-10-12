@@ -1,56 +1,41 @@
 package ru.example.letterflow.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.entity.User;
-import ru.example.letterflow.exceptions.ImpossibleActionException;
+import ru.example.letterflow.exceptions.*;
+import ru.example.letterflow.service.BotService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-//import ru.example.letterflow.service.BotService;
-
 @RestController
 @RequestMapping("/bot")
 public class BotController {
-    public static void main(String[] args) throws ImpossibleActionException {
-        System.out.println(new BotController().parseCommand("help"));
-    }
 
-//    private final BotService botService;
-//    private final String command;
-//
-//    @Autowired
-//    public BotController(BotService botService, String command) {
-//        this.botService = botService;
-//        this.command = command;
-//    }
+    private final BotService botService;
+
+    @Autowired
+    public BotController(BotService botService) {
+        this.botService = botService;
+    }
 
     @GetMapping
     public void possibleActions(@RequestBody User user,
-                                @RequestBody String command) throws ImpossibleActionException {
+                                @RequestBody String command) throws ImpossibleActionException, InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, UserAlreadyExistException {
         Map<String, String> mapCommand = parseCommand(command);
-        String service = mapCommand.get("service");
-        String action = mapCommand.get("action");
-        String roomName = mapCommand.get("roomName");
-        String login = mapCommand.get("login");
-        Boolean person = Boolean.valueOf(mapCommand.get("person"));
-        Long milliseconds = Long.valueOf(mapCommand.get("milliseconds"));
-        String role = mapCommand.get("role");
-        String nameChannel = mapCommand.get("nameChannel");
-        Boolean views = Boolean.valueOf(mapCommand.get("views"));
-        Boolean likes = Boolean.valueOf(mapCommand.get("likes"));
 
-        switch (service){
+        switch (mapCommand.get("service")){
             case "room":
-                roomCommand(action, roomName, person, login, milliseconds);
+                botService.roomCommand(user, mapCommand);
                 break;
             case "user":
-                userCommand(action, login, milliseconds, role);
+                botService.userCommand(user, mapCommand);
                 break;
             case "yBot":
-                botCommand(action, nameChannel, views, likes);
+                botService.botCommand(user, mapCommand);
                 break;
         }
     }
@@ -71,29 +56,29 @@ public class BotController {
 
             if (mapCommand.get("service").equals("room") && listCommand.size() > 2) {
                 mapCommand.put("roomName", listCommand.get(2));
+                if(mapCommand.get("action").equals("rename")){
+                    mapCommand.put("newRoomName", listCommand.get(3));
+                }
                 for (String com : listCommand) {
                     if (com.equals("-l")) {
                         mapCommand.put("login", listCommand.get(listCommand.indexOf(com) + 1));
                     }
                     if (com.equals("-c")) {
-                        mapCommand.put("person", "person");
-                    }
-                    if (com.equals("-m")) {
-                        mapCommand.put("milliseconds", listCommand.get(listCommand.indexOf(com) + 1));
+                        mapCommand.put("personal", "personal");
                     }
                 }
             }
             if(mapCommand.get("service").equals("user")){
                 mapCommand.put("login", listCommand.get(2));
+                if(mapCommand.get("action").equals("rename")){
+                    mapCommand.put("newLogin", listCommand.get(3));
+                }
                 for (String com : listCommand) {
                     if (com.equals("-n")) {
                         mapCommand.put("role", "moderator");
                     }
                     if (com.equals("-d")) {
                         mapCommand.put("role", "user");
-                    }
-                    if (com.equals("-m")) {
-                        mapCommand.put("milliseconds", listCommand.get(listCommand.indexOf(com) + 1));
                     }
                 }
             }
@@ -113,21 +98,8 @@ public class BotController {
             }
 
         } catch (Exception e){
-            throw new ImpossibleActionException("Ввели неверную команду");
+            throw new ImpossibleActionException("Вы ввели неверную команду");
         }
         return mapCommand;
     }
-
-    public void roomCommand(String action, String roomName, Boolean person, String login, Long milliseconds){
-
-    }
-
-    public void userCommand(String action, String login, Long milliseconds, String role){
-
-    }
-
-    public void botCommand(String action, String nameChannel, Boolean views, Boolean likes){
-
-    }
-
 }

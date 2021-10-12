@@ -141,6 +141,19 @@ public class UserService {
     }
 
     @Transactional
+    public UserDto cleanRooms(User user, String login) throws InsufficientAccessRightsException {
+        if(!user.getRole().equals(Role.ADMIN)){
+            throw new InsufficientAccessRightsException("Удалять пользователя из всех чатов может только администратор");
+        }
+        User bannedUser = userRepo.findByUserLogin(login);
+        List<Long> rooms = bannedUser.getRooms();
+        rooms.clear();
+        bannedUser.setRooms(rooms);
+        userRepo.save(bannedUser);
+        return UserMapper.USER_MAPPER.toDto(bannedUser);
+    }
+
+    @Transactional
     public UserDto editName (Long userId,String login, String newLogin) throws UserAlreadyExistException, UserNotFoundException, InsufficientAccessRightsException {
         if(!findUserById(userId).isAdmin() || !userId.equals(findUserByLogin(login).getUserId())){
             throw new InsufficientAccessRightsException("Вы не можете менять имя пользователю " + login);
