@@ -23,21 +23,16 @@ public class BotController {
     }
 
     @GetMapping
-    public void possibleActions(@RequestBody User user,
+    public String possibleActions(@RequestBody User user,
                                 @RequestBody String command) throws ImpossibleActionException, InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, UserAlreadyExistException {
         Map<String, String> mapCommand = parseCommand(command);
 
-        switch (mapCommand.get("service")){
-            case "room":
-                botService.roomCommand(user, mapCommand);
-                break;
-            case "user":
-                botService.userCommand(user, mapCommand);
-                break;
-            case "yBot":
-                botService.botCommand(user, mapCommand);
-                break;
-        }
+        Map<String, String> mapService = new HashMap<>();
+        mapService.put("room", botService.roomCommand(user, mapCommand));
+        mapService.put("user", botService.userCommand(user, mapCommand));
+        mapService.put("yBot", botService.botCommand(user, mapCommand));
+
+        return mapService.get(mapCommand.get("service"));
     }
 
     @PutMapping

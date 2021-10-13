@@ -2,7 +2,6 @@ package ru.example.letterflow.security.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,24 +22,20 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    @Autowired
-    @Value("letterbox")
+    @Value("jwt.secret")
     private String secret;
-    @Autowired
-    @Value("3600000")
+    @Value("jwt.expired")
     private final Long validityInMillisec;
-    @Autowired
-    @Value("Authorization")
+    @Value("jwt.header")
     private final String autorizationHeader;
-
-    @Autowired
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public JwtTokenProvider(UserDetailsService userDetailsService, Long validityInMillisec, String autorizationHeader) {
-        this.userDetailsService = userDetailsService;
+    public JwtTokenProvider(String secret, Long validityInMillisec, String autorizationHeader, UserDetailsService userDetailsService) {
+        this.secret = secret;
         this.validityInMillisec = validityInMillisec;
         this.autorizationHeader = autorizationHeader;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostConstruct
@@ -73,11 +68,6 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request){
-//        String bearerToken = request.getHeader("Authorization");
-//        if (bearerToken != null && bearerToken.startsWith("Bearer_")){
-//            int l = bearerToken.length();
-//            return bearerToken.substring(7, l);
-//        }
         return request.getHeader(autorizationHeader);
     }
 
