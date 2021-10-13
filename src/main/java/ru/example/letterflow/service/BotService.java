@@ -3,7 +3,6 @@ package ru.example.letterflow.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.example.letterflow.domain.entity.Enum.Role;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.*;
 import ru.example.letterflow.repository.RoomRepo;
@@ -84,6 +83,8 @@ public class BotService {
     }
 
     public String botCommand(User user, Map<String, String> mapCommand){
-        return  null;
+        String result = null;
+
+        return  result;
     }
 }

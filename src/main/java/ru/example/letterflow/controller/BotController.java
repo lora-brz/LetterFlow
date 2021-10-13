@@ -1,6 +1,7 @@
 package ru.example.letterflow.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.*;
@@ -23,8 +24,8 @@ public class BotController {
     }
 
     @GetMapping
-    public String possibleActions(@RequestBody User user,
-                                @RequestBody String command) throws ImpossibleActionException, InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, UserAlreadyExistException {
+    public ResponseEntity possibleActions(@RequestBody User user,
+                                          @RequestBody String command) throws ImpossibleActionException, InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, UserAlreadyExistException {
         Map<String, String> mapCommand = parseCommand(command);
 
         Map<String, String> mapService = new HashMap<>();
@@ -32,7 +33,7 @@ public class BotController {
         mapService.put("user", botService.userCommand(user, mapCommand));
         mapService.put("yBot", botService.botCommand(user, mapCommand));
 
-        return mapService.get(mapCommand.get("service"));
+        return ResponseEntity.ok(mapService.get(mapCommand.get("service")));
     }
 
     @PutMapping
@@ -81,10 +82,13 @@ public class BotController {
             if(mapCommand.get("service").equals("yBot") && mapCommand.get("action").equals("find")){
                 for (String com : listCommand) {
                     if (com.equals("-k")) {
-                        mapCommand.put("nameChannel", listCommand.get(listCommand.indexOf(com) + 1));
+                        mapCommand.put("channel", listCommand.get(listCommand.indexOf(com) + 1));
                     }
                     if (com.equals("-v")) {
-                        mapCommand.put("views", "views");
+                        mapCommand.put("video", listCommand.get(listCommand.indexOf(com) + 1));
+                    }
+                    if (com.equals("-w")) {
+                        mapCommand.put("watchers", "watchers");
                     }
                     if (com.equals("-l")) {
                         mapCommand.put("likes", "likes");
