@@ -7,6 +7,8 @@ import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.*;
 import ru.example.letterflow.service.BotService;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +27,9 @@ public class BotController {
 
     @GetMapping
     public ResponseEntity possibleActions(@RequestBody User user,
-                                          @RequestBody String command) throws ImpossibleActionException, InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, UserAlreadyExistException {
+                                          @RequestBody String command) throws ImpossibleActionException,
+            InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException,
+            UserAlreadyExistException, GeneralSecurityException, IOException {
         Map<String, String> mapCommand = parseCommand(command);
 
         Map<String, String> mapService = new HashMap<>();
@@ -95,7 +99,6 @@ public class BotController {
                     }
                 }
             }
-
         } catch (Exception e){
             throw new ImpossibleActionException("Вы ввели неверную команду");
         }

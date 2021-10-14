@@ -7,6 +7,8 @@ import ru.example.letterflow.domain.entity.User;
 import ru.example.letterflow.exceptions.*;
 import ru.example.letterflow.repository.RoomRepo;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 
 @Service
@@ -15,12 +17,14 @@ public class BotService {
     private final RoomService roomService;
     private final RoomRepo roomRepo;
     private final UserService userService;
+    private final YouTubeService youTubeService;
 
     @Autowired
-    public BotService(RoomService roomService, RoomRepo roomRepo, UserService userService) {
+    public BotService(RoomService roomService, RoomRepo roomRepo, UserService userService, YouTubeService youTubeService) {
         this.roomService = roomService;
         this.roomRepo = roomRepo;
         this.userService = userService;
+        this.youTubeService = youTubeService;
     }
 
     public String roomCommand(User user, Map<String, String> mapCommand) throws InsufficientAccessRightsException, RoomAlreadyExistException, UserNotFoundException, ImpossibleActionException {
@@ -82,9 +86,20 @@ public class BotService {
         return result;
     }
 
-    public String botCommand(User user, Map<String, String> mapCommand){
+    public String botCommand(User user, Map<String, String> mapCommand) throws GeneralSecurityException, IOException {
         String result = null;
-
-        return  result;
+        if(Boolean.parseBoolean(mapCommand.get("channel"))){
+            result = "Ссылка на канал: " + youTubeService.getLinkChannel(mapCommand.get("channel")) + ".";
+        }
+        if(Boolean.parseBoolean(mapCommand.get("video"))){
+            result = "Ссылка на видео: " + youTubeService.getLinkVideo(mapCommand.get("video")) + ".";
+            if(Boolean.parseBoolean(mapCommand.get("watchers"))){
+                result += " Количество просмотров: " + youTubeService.getNumberWatchers(mapCommand.get("video")) + ".";
+            }
+            if(Boolean.parseBoolean(mapCommand.get("likes"))){
+                result += " Количество лайков: " + youTubeService.getNumberLikes(mapCommand.get("video")) + ".";
+            }
+        }
+        return result;
     }
 }
