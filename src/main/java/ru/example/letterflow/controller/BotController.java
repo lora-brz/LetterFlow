@@ -36,6 +36,7 @@ public class BotController {
         mapService.put("room", botService.roomCommand(user, mapCommand));
         mapService.put("user", botService.userCommand(user, mapCommand));
         mapService.put("yBot", botService.botCommand(user, mapCommand));
+        mapService.put("help", botService.getAvailableCommands());
 
         return ResponseEntity.ok(mapService.get(mapCommand.get("service")));
     }
@@ -83,20 +84,28 @@ public class BotController {
                 }
             }
 
-            if(mapCommand.get("service").equals("yBot") && mapCommand.get("action").equals("find")){
-                for (String com : listCommand) {
-                    if (com.equals("-k")) {
-                        mapCommand.put("channel", listCommand.get(listCommand.indexOf(com) + 1));
+            if(mapCommand.get("service").equals("yBot")){
+                if(mapCommand.get("action").equals("find")) {
+                    for (String com : listCommand) {
+                        if (com.equals("-k")) {
+                            mapCommand.put("channel", listCommand.get(listCommand.indexOf(com) + 1));
+                        }
+                        if (com.equals("-v")) {
+                            mapCommand.put("video", listCommand.get(listCommand.indexOf(com) + 1));
+                        }
+                        if (com.equals("-w")) {
+                            mapCommand.put("watchers", "watchers");
+                        }
+                        if (com.equals("-l")) {
+                            mapCommand.put("likes", "likes");
+                        }
                     }
-                    if (com.equals("-v")) {
-                        mapCommand.put("video", listCommand.get(listCommand.indexOf(com) + 1));
-                    }
-                    if (com.equals("-w")) {
-                        mapCommand.put("watchers", "watchers");
-                    }
-                    if (com.equals("-l")) {
-                        mapCommand.put("likes", "likes");
-                    }
+                }
+                if(mapCommand.get("action").equals("changelInfo")){
+                    mapCommand.put("channel", listCommand.get(2));
+                }
+                if(mapCommand.get("action").equals("videoCommentRandom")){
+                    mapCommand.put("video", listCommand.get(2));
                 }
             }
         } catch (Exception e){
